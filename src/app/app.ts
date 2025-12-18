@@ -8,5 +8,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('fundi-pro');
+  protected readonly title = signal('jenga-fundi-pro');
 }
