@@ -4,30 +4,32 @@ import { Observable, tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { HttpContextToken, HttpContext } from '@angular/common/http';
+export const BYPASS_AUTH = new HttpContextToken(() => false);
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  
   private apiUrl = environment.apiUrl+'api/login/';
   private logoutUrl = environment.apiUrl+'api/logout/';
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
-  login(payload: { identifier: string; password: string }): Observable<any> {
-    return this.http.post<any>(this.apiUrl, payload).pipe(
-  tap(res => {
-  if (!isPlatformBrowser(this.platformId)) return;
+login(payload: { username: string; password: string }): Observable<any> {
+  return this.http.post<any>(this.apiUrl, payload, {
+    context: new HttpContext().set(BYPASS_AUTH, true)
+  }).pipe(
+    tap(res => {
+      if (!isPlatformBrowser(this.platformId)) return;
+      if (!res?.access || !res?.refresh) return;
 
-  if (!res?.access || !res?.refresh) {
-    console.error('Login response missing tokens:', res);
-    return;
-  }
+      localStorage.setItem('access_token', res.access);
+      localStorage.setItem('refresh_token', res.refresh);
+    })
+  );
+}
 
-  localStorage.setItem('access_token', res.access);
-  localStorage.setItem('refresh_token', res.refresh);
-})
-    );
-  }
 
   getAccessToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {

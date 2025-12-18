@@ -10,6 +10,21 @@ import { AuthService } from '../../services/auth';
   styleUrl: './main.css',
 })
 export class Main {
+sidebarOpen = false;
+
+toggleSidebar() {
+  this.sidebarOpen = !this.sidebarOpen;
+}
+
+closeSidebar() {
+  this.sidebarOpen = false;
+}
+
+onNavLinkClick() {
+  if (window.innerWidth < 992) {
+    this.closeSidebar();
+  }
+}
 
 
 links = [
@@ -24,53 +39,6 @@ links = [
 
   ngOnInit(): void {}
 
-  /**
-   * Toggle the mobile sidebar visibility
-   */
-  toggleSidebar(): void {
-    this.isSidebarActive = !this.isSidebarActive;
-    
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.querySelector('.sidebar-overlay');
-    
-    if (sidebar && overlay) {
-      sidebar.classList.toggle('active');
-      overlay.classList.toggle('active');
-    }
-  
-    // Toggle body scroll
-    this.toggleBodyScroll();
-  }
-
-  /**
-   * Close sidebar when clicking outside on mobile
-   */
-  closeSidebar(): void {
-    if (this.isSidebarActive) {
-      this.isSidebarActive = false;
-      
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.querySelector('.sidebar-overlay');
-      
-      if (sidebar && overlay) {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-      }
-
-      this.toggleBodyScroll();
-    }
-  }
-
-  /**
-   * Handle navigation link click
-   * Close sidebar on mobile after clicking a link
-   */
-  onNavLinkClick(): void {
-    // Close mobile sidebar after clicking on mobile devices
-    if (window.innerWidth <= 992) {
-      this.closeSidebar();
-    }
-  }
 
   /**
    * Listen for window resize events to handle responsive behavior
