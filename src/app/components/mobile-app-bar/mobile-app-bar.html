@@ -1,0 +1,24 @@
+@if (isMobile()) {
+  <header class="mobile-bar">
+    <div class="nav-left">
+      @if (showBack()) {
+        <button class="back-btn" (click)="goBack()" aria-label="Go back">
+          <span class="back-icon">←</span>
+        </button>
+      }
+      <h1 class="title">{{ title() }}</h1>
+    </div>
+    
+    <div class="nav-right">
+      <!-- Optional action buttons -->
+  
+<div class="nav-right">
+  @if (showAccountAction()) {
+    <button class="nav-action" aria-label="Account">
+      <span class="material-symbols-outlined">account_circle</span>
+    </button>
+  }
+</div>
+    </div>   
+  </header>
+}

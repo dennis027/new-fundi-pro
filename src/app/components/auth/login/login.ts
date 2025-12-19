@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrls: ['./login.css']
 })
 export class Login {
 private fb = inject(FormBuilder);

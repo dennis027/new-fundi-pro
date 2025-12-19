@@ -1,65 +1,140 @@
+/* ---------- ROOT VARIABLES ---------- */
+:root {
+  --primary: #1565C0;
+  --primary-light: #E3F2FD;
+  --bg: #f4f6f8;
+  --card-bg: #ffffff;
+  --text-dark: #1f2933;
+  --text-muted: #6b7280;
+  --success: #2e7d32;
+  --shadow: 0 4px 12px rgba(0,0,0,0.06);
+  --radius: 14px;
+}
+
+/* ---------- BASE ---------- */
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: Inter, Roboto, Arial, sans-serif;
-  background: #f2f4f7;
+  background: var(--bg);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-dark);
 }
 
 .page {
-  max-width: 1100px;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 16px;
 }
 
-/* App Bar */
+/* ---------- APP BAR ---------- */
 .app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
-  padding: 12px 16px;
-  border-radius: 12px;
-  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .app-bar h1 {
-  color: #1565c0;
+  margin: 0;
   font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 .profile-menu img {
   width: 36px;
   height: 36px;
   border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
 }
 
-/* Cards */
+/* ---------- CARDS ---------- */
 .card {
-  background: #fff;
-  border-radius: 16px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
   padding: 16px;
+  box-shadow: var(--shadow);
   margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.05);
 }
 
+/* ---------- WELCOME CARD ---------- */
 .welcome-card {
   display: flex;
   gap: 16px;
-  background: #e3f2fd;
+  align-items: center;
+  background: var(--primary-light);
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
-/* Credit Score */
+.welcome-card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.welcome-card p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ---------- MOBILE NAV ---------- */
+.mobile-nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.nav-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 18px 12px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.nav-card:hover {
+  transform: translateY(-2px);
+}
+
+.nav-card i {
+  font-size: 28px;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.nav-card span {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- CREDIT SCORE ---------- */
 .credit-card {
   text-align: center;
+}
+
+.credit-card h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .score-wrapper {
@@ -71,20 +146,33 @@ body {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 8px solid #4caf50;
+  background:
+    conic-gradient(var(--success) 0deg 270deg, #e5e7eb 270deg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: bold;
+}
+
+.score-circle span {
+  background: #fff;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--success);
 }
 
 .score-label {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 13px;
+  color: var(--text-muted);
 }
 
-/* Actions */
+/* ---------- QUICK ACTIONS ---------- */
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -97,101 +185,63 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
 }
 
 .action i {
-  font-size: 30px;
-  color: #1e88e5;
+  font-size: 28px;
+  color: #2196f3;
 }
 
 .action span {
   font-size: 12px;
 }
 
-/* List cards */
+/* ---------- LIST CARD ---------- */
+.list-card {
+  padding: 0;
+}
+
 .list-item {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 16px;
+  cursor: pointer;
 }
 
 .list-item h4 {
   margin: 0;
+  font-size: 15px;
 }
 
 .list-item p {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   font-size: 13px;
+  color: var(--text-muted);
 }
 
-.green { color: #2e7d32; }
-.red { color: #d32f2f; }
-
-/* Profile */
-.info-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-/* Switch */
-.switch {
+.list-item i:last-child {
   margin-left: auto;
-  position: relative;
-  width: 44px;
-  height: 24px;
+  color: #9ca3af;
 }
 
-.switch input {
-  display: none;
+.green {
+  color: var(--success);
 }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background: #ccc;
-  border-radius: 24px;
-}
-
-.slider:before {
-  content: "";
-  position: absolute;
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  top: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: .3s;
-}
-
-.switch input:checked + .slider {
-  background: #4caf50;
-}
-
-.switch input:checked + .slider:before {
-  transform: translateX(20px);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .actions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .actions-grid {
-    grid-template-columns: repeat(3, 1fr);
+/* ---------- RESPONSIVE ---------- */
+@media (min-width: 768px) {
+  .page {
+    padding: 24px;
   }
 
-  .welcome-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  .mobile-nav {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(6, 1fr);
   }
 }

@@ -1,14 +1,9 @@
 <!-- APP BAR (MOBILE ONLY) -->
-<header class="app-bar">
-  <button class="icon-btn" (click)="toggleSidebar()">
-    <i class="fas fa-bars"></i>
-  </button>
-  <span class="title">Fundi Pro</span>
-</header>
+<br><br>
 
-<!-- OVERLAY -->
+<!-- OVERLAY (MOBILE ONLY) -->
 <div
-  class="overlay"
+  class="overlay" 
   [class.active]="sidebarOpen"
   (click)="closeSidebar()">
 </div>
@@ -21,13 +16,13 @@
     <div class="sidebar-header">Fundi Pro</div>
 
     <nav class="nav-menu">
-      <a
-        *ngFor="let link of links"
+      <a 
+        *ngFor="let link of links" 
         [routerLink]="link.route"
         routerLinkActive="active"
-        (click)="onNavLinkClick()">
+        (click)="onNavLinkClick()">  
         <i [class]="link.icon"></i>
-        <span>{{ link.name }}</span>
+        <span>{{ link.name }}</span> 
       </a>
     </nav>
 
@@ -37,9 +32,11 @@
     </button>
   </aside>
 
-  <!-- CONTENT -->
+  <!-- MAIN CONTENT -->
   <main class="content">
+    <app-mobile-app-bar></app-mobile-app-bar>
     <router-outlet></router-outlet>
   </main>
 
 </div>
+ 

@@ -6,6 +6,8 @@ import { Login } from './components/auth/login/login';
 import { Register } from './components/auth/register/register';
 import { AuthGuard } from './guards/auth-guard';
 import { Main } from './components/main/main';
+import { AddGig } from './components/add-gig/add-gig';
+import { Profile } from './components/profile/profile';
 
 export const routes: Routes = [
   {path:'home',component:Home},
@@ -14,7 +16,9 @@ export const routes: Routes = [
   
   {path:'main-menu',canActivate: [AuthGuard],component:Main, 
     children:[
-        {path:'',canActivate: [AuthGuard],component:FundiDash,},
+        {path:'',canActivate: [AuthGuard],component:FundiDash},
+        {path:'gigs',canActivate: [AuthGuard],component:AddGig,},
+        {path:'profile',canActivate: [AuthGuard],component:Profile,},
    ]},
 
 
