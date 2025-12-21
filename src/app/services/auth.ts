@@ -16,6 +16,11 @@ export class AuthService {
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
+
+register(payload: { username: string; email: string; password: string, confirm_password: string, account_type: string }): Observable<any> {
+  return this.http.post<any>(environment.apiUrl + 'api/register/', payload);
+}
+
 login(payload: { username: string; password: string }): Observable<any> {
   return this.http.post<any>(this.apiUrl, payload, {
     context: new HttpContext().set(BYPASS_AUTH, true)

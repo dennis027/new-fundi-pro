@@ -2,6 +2,7 @@ import { Component, inject, OnInit, PLATFORM_ID, signal, afterNextRender } from 
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { Location, CommonModule, isPlatformBrowser } from '@angular/common';
 import { filter } from 'rxjs';
+import { AppBarService } from '../../services/app-bar-service';
 
 @Component({
   selector: 'app-mobile-app-bar',
@@ -15,6 +16,8 @@ export class MobileAppBar implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private platformId = inject(PLATFORM_ID);
+  appBar = inject(AppBarService);
+  
 
   // Signals for reactive state
   isMobile = signal(false);
@@ -75,10 +78,13 @@ private updateFromRoute() {
 
 
   /** Navigate back */
-  goBack() {
+goBack() {
+  if (window.history.length > 1) {
     this.location.back();
+  } else {
+    this.router.navigate(['/main-menu']);
   }
-
+}
 
   
 

@@ -1,12 +1,4 @@
-<!-- APP BAR (MOBILE ONLY) -->
-<br><br>
 
-<!-- OVERLAY (MOBILE ONLY) -->
-<div
-  class="overlay" 
-  [class.active]="sidebarOpen"
-  (click)="closeSidebar()">
-</div>
 
 <!-- APP LAYOUT -->
 <div class="app-layout">
@@ -15,16 +7,17 @@
   <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="sidebar-header">Fundi Pro</div>
 
-    <nav class="nav-menu">
-      <a 
-        *ngFor="let link of links" 
-        [routerLink]="link.route"
-        routerLinkActive="active"
-        (click)="onNavLinkClick()">  
-        <i [class]="link.icon"></i>
-        <span>{{ link.name }}</span> 
-      </a>
-    </nav>
+  <nav class="nav-menu">
+    <a 
+      *ngFor="let link of links; let i = index" 
+      [routerLink]="link.route"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: i === 0 }"
+      (click)="onNavLinkClick()">  
+      <i [class]="link.icon"></i>
+      <span>{{ link.name }}</span> 
+    </a>
+  </nav>
 
     <button class="logout-btn" (click)="logOut()">
       <i class="fas fa-sign-out-alt"></i>

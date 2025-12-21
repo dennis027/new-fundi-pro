@@ -8,6 +8,12 @@ import { AuthGuard } from './guards/auth-guard';
 import { Main } from './components/main/main';
 import { AddGig } from './components/add-gig/add-gig';
 import { Profile } from './components/profile/profile';
+import { Mpesa } from './components/mpesa/mpesa';
+import { SearchGigs } from './components/search-gigs/search-gigs';
+import { Workhistory } from './components/workhistory/workhistory';
+import { ProofOfPayment } from './components/proof-of-payment/proof-of-payment';
+import { GigSummary } from './components/gig-summary/gig-summary';
+import { CreditScore } from './components/credit-score/credit-score';
 
 export const routes: Routes = [
   {path:'home',component:Home},
@@ -19,6 +25,15 @@ export const routes: Routes = [
         {path:'',canActivate: [AuthGuard],component:FundiDash},
         {path:'gigs',canActivate: [AuthGuard],component:AddGig,},
         {path:'profile',canActivate: [AuthGuard],component:Profile,},
+        {path:'mpesa',canActivate: [AuthGuard],component:Mpesa},
+        {path:'search-gigs',canActivate: [AuthGuard],component:SearchGigs,},
+        {path:'work-history',canActivate: [AuthGuard],component:Workhistory,},
+        {path:'proof-of-payments',canActivate: [AuthGuard],component:ProofOfPayment},
+        {path:'gig-summary',canActivate: [AuthGuard],component:GigSummary,},
+        {path:'credit-score',canActivate: [AuthGuard],component:CreditScore,},
+
+        { path: '404', component: NotFound },
+        { path: '**', redirectTo: '/404' } 
    ]},
 
 
@@ -26,3 +41,4 @@ export const routes: Routes = [
   { path: '**', redirectTo: '/404' } 
   
 ];
+ 

@@ -1,59 +1,223 @@
+<!-- fundi-dash.html --> <br><br>
 <div class="page">
+  
+       @if (isMobile()) {
+        <section class="mobile-nav">
+          <!-- My Gigs -->
+          <div class="nav-card" routerLink="/main-menu/gigs">
+            <i class="material-icons">work_outline</i>
+            <span>My Gigs</span>
+          </div>
 
+          <!-- M-Pesa / Payments -->
+          <div class="nav-card" routerLink="/main-menu/mpesa">
+            <i class="material-icons">account_balance_wallet</i>
+            <span>MPesa</span>
+          </div>
 
+          <!-- Proof of Payment -->
+          <div class="nav-card" routerLink="/main-menu/proof-of-payments">
+            <i class="material-icons">receipt_long</i>
+            <span>Proof of Payment</span>
+          </div>
 
-  <!-- WELCOME -->
-  <section class="card welcome-card">
-    <img class="avatar" src="assets/user.png" /> 
-    <div>
-      <h2>Welcome, Dennis!</h2>
-      <p>Keep building. Log your gigs to grow your profile.</p>
+          <!-- Credit Score -->
+          <div class="nav-card" routerLink="/main-menu/credit-score">
+            <i class="material-icons">score</i>
+            <span>Credit Score</span>
+          </div>
+
+          <!-- Work History -->
+          <div class="nav-card" routerLink="/main-menu/work-history">
+            <i class="material-icons">history_toggle_off</i>
+            <span>Work History</span>
+          </div>
+
+          <!-- Profile -->
+          <div class="nav-card" routerLink="/main-menu/profile">
+            <i class="material-icons">person_outline</i>
+            <span>Profile</span>
+          </div>
+        </section>
+      }
+
+  <!-- 🔥 DESKTOP DASHBOARD - Only visible on desktop -->
+  @if (!isMobile()) {
+    <!-- Desktop Header -->
+    <div class="desktop-header">
+      <h1>Dashboard</h1>
+      <p>Welcome back! Here's your business overview</p>
     </div>
-  </section>
 
-  <!-- 🔥 MOBILE NAVIGATION CARDS -->
-<section class="mobile-nav" *ngIf="isMobile">
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon bg-blue">
+            <i class="material-icons">work_outline</i>
+          </div>
+          <span class="stat-change">+12%</span>
+        </div>
+        <h3>Total Jobs</h3>
+        <p class="stat-value">47</p>
+      </div>
 
-  <!-- My Gigs -->
-  <div class="nav-card" routerLink="/main-menu/gigs">
-    <i class="material-icons">work_outline</i>
-    <span>My Gigs</span>
-  </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon bg-green">
+            <i class="material-icons">people_outline</i>
+          </div>
+          <span class="stat-change">+8%</span>
+        </div>
+        <h3>Active Clients</h3>
+        <p class="stat-value">23</p>
+      </div>
 
-  <!-- M-Pesa / Payments -->
-  <div class="nav-card" routerLink="/payments">
-    <i class="material-icons">account_balance_wallet</i>
-    <span>MPesa</span>
-  </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon bg-purple">
+            <i class="material-icons">attach_money</i>
+          </div>
+          <span class="stat-change">+15%</span>
+        </div>
+        <h3>Revenue</h3>
+        <p class="stat-value">KSh 340K</p>
+      </div>
 
-  <!-- Proof of Payment -->
-  <div class="nav-card" routerLink="/history">
-    <i class="material-icons">receipt_long</i>
-    <span>Proof of Payment</span>
-  </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon bg-orange">
+            <i class="material-icons">calendar_today</i>
+          </div>
+          <span class="stat-change">+5%</span>
+        </div>
+        <h3>This Month</h3>
+        <p class="stat-value">12 Jobs</p>
+      </div>
+    </div>
 
-  <!-- Credit Score -->
-  <div class="nav-card" routerLink="/credit-score">
-    <i class="material-icons">score</i>
-    <span>Credit Score</span>
-  </div>
+    <!-- Desktop Content Grid -->
+    <div class="desktop-grid">
+      <!-- Recent Jobs -->
+      <div class="desktop-card recent-jobs">
+        <div class="card-header">
+          <h2>Recent Jobs</h2>
+        </div>
+        <div class="jobs-list">
+          <div class="job-item">
+            <div class="job-main">
+              <div class="job-info">
+                <h3>John Mwangi</h3>
+                <p>Plumbing Repair</p>
+              </div>
+              <span class="job-amount">KSh 8,500</span>
+            </div>
+            <div class="job-footer">
+              <span class="status-badge completed">
+                <i class="material-icons">check_circle</i>
+                completed
+              </span>
+              <span class="job-time">2 hours ago</span>
+            </div>
+          </div>
 
-  <!-- Work History -->
-  <div class="nav-card" routerLink="/history">
-    <i class="material-icons">history_toggle_off</i>
-    <span>Work History</span>
-  </div>
+          <div class="job-item">
+            <div class="job-main">
+              <div class="job-info">
+                <h3>Jane Wanjiku</h3>
+                <p>Electrical Installation</p>
+              </div>
+              <span class="job-amount">KSh 15,000</span>
+            </div>
+            <div class="job-footer">
+              <span class="status-badge in-progress">
+                <i class="material-icons">schedule</i>
+                in progress
+              </span>
+              <span class="job-time">5 hours ago</span>
+            </div>
+          </div>
 
-  <!-- Profile -->
-  <div class="nav-card" routerLink="/main-menu/profile">
-    <i class="material-icons">person_outline</i>
-    <span>Profile</span>
-  </div>
+          <div class="job-item">
+            <div class="job-main">
+              <div class="job-info">
+                <h3>Peter Kamau</h3>
+                <p>Carpentry Work</p>
+              </div>
+              <span class="job-amount">KSh 12,000</span>
+            </div>
+            <div class="job-footer">
+              <span class="status-badge pending">
+                <i class="material-icons">error_outline</i>
+                pending
+              </span>
+              <span class="job-time">1 day ago</span>
+            </div>
+          </div>
 
-</section>
+          <div class="job-item">
+            <div class="job-main">
+              <div class="job-info">
+                <h3>Mary Akinyi</h3>
+                <p>House Painting</p>
+              </div>
+              <span class="job-amount">KSh 25,000</span>
+            </div>
+            <div class="job-footer">
+              <span class="status-badge completed">
+                <i class="material-icons">check_circle</i>
+                completed
+              </span>
+              <span class="job-time">2 days ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Upcoming Appointments -->
+      <div class="desktop-card upcoming">
+        <div class="card-header">
+          <h2>Upcoming</h2>
+        </div>
+        <div class="appointments-list">
+          <div class="appointment-item">
+            <div class="appointment-icon">
+              <i class="material-icons">calendar_today</i>
+            </div>
+            <div class="appointment-info">
+              <h3>David Omondi</h3>
+              <p>Plumbing Inspection</p>
+              <span class="appointment-time">Today, 2:00 PM</span>
+            </div>
+          </div>
 
-  <!-- CREDIT SCORE -->
+          <div class="appointment-item">
+            <div class="appointment-icon">
+              <i class="material-icons">calendar_today</i>
+            </div>
+            <div class="appointment-info">
+              <h3>Sarah Njeri</h3>
+              <p>Electrical Repair</p>
+              <span class="appointment-time">Tomorrow, 10:00 AM</span>
+            </div>
+          </div>
+
+          <div class="appointment-item">
+            <div class="appointment-icon">
+              <i class="material-icons">calendar_today</i>
+            </div>
+            <div class="appointment-info">
+              <h3>James Kimani</h3>
+              <p>Cabinet Installation</p>
+              <span class="appointment-time">Dec 23, 3:00 PM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CREDIT SCORE - Visible on both mobile and desktop -->
   <section class="card credit-card">
     <h3>Credit Score</h3>
     <div class="score-wrapper">
@@ -64,26 +228,10 @@
     <p class="score-label">Reliable User</p>
   </section>
 
-  <!-- QUICK ACTIONS -->
-  <section class="card">
-    <div class="actions-grid">
-      <button class="action">
-        <i class="material-icons">add</i>
-        <span>Log Gig</span>
-      </button>
-      <button class="action">
-        <i class="material-icons">upload_file</i>
-        <span>Proof</span>
-      </button>
-      <button class="action">
-        <i class="material-icons">search</i>
-        <span>Search</span>
-      </button>
-    </div>
-  </section>
+
 
   <!-- GIG SUMMARY -->
-  <section class="card list-card" routerLink="/gigs">
+  <section class="card list-card" routerLink="/main-menu/gig-summary">
     <div class="list-item">
       <i class="material-icons green">work_outline</i>
       <div>
@@ -93,5 +241,4 @@
       <i class="material-icons">chevron_right</i>
     </div>
   </section>
-
 </div>
