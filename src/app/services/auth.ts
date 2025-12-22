@@ -77,4 +77,11 @@ logout(): Observable<any> {
   );
 }
 
+
+resendActivationEmail(email: any): Observable<any> {
+  return this.http.post<any>(environment.apiUrl + 'api/resend-verification/', { email }, {
+    context: new HttpContext().set(BYPASS_AUTH, true)
+  });
+}
+
 }

@@ -3,6 +3,7 @@ import {
   signal,
   inject,
   ChangeDetectorRef,
+  NgZone,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -30,11 +31,14 @@ export class Register {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
 
+  // 🔹 Reactive signals
   loading = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
 
+  // 🔹 FormGroup
   registerForm: FormGroup = this.fb.group(
     {
       username: ['', Validators.required],
@@ -46,13 +50,14 @@ export class Register {
     { validators: this.passwordsMatch }
   );
 
-  // 🔐 Password match validator
+  // 🔹 Password match validator
   private passwordsMatch(control: AbstractControl) {
     const password = control.get('password')?.value;
     const confirm = control.get('confirm_password')?.value;
     return password === confirm ? null : { passwordMismatch: true };
   }
 
+  // 🔹 Toggle password visibility
   togglePassword() {
     this.showPassword.set(!this.showPassword());
   }
@@ -61,7 +66,8 @@ export class Register {
     this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 
-  showSuccess(message: string) {
+  // 🔹 SnackBar helpers
+  private showSuccess(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
       panelClass: ['success-snackbar'],
@@ -70,7 +76,7 @@ export class Register {
     });
   }
 
-  showError(message: string) {
+  private showError(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 4000,
       panelClass: ['error-snackbar'],
@@ -79,6 +85,7 @@ export class Register {
     });
   }
 
+  // 🔹 Form submit
   onSubmit() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -87,18 +94,48 @@ export class Register {
 
     this.loading.set(true);
 
-    this.authService.register(this.registerForm.value)
+    this.authService
+      .register(this.registerForm.value)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.showSuccess('Account created successfully!');
-          this.router.navigate(['/login']);
+
+          // Navigate to email verification page with email in state
+          this.router.navigate(['/email-verify'], {
+            state: {
+              email: this.registerForm.value.email,
+              from: 'register',
+            },
+          });
+
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.showError(
-            err?.error?.message || 'Registration failed. Try again.'
-          );
+          const code = err?.error?.code;
+          const message = err?.error?.message;
+          // Handle backend errors gracefully
+
+                    // 🔹 EMAIL_NOT_VERIFIED handling
+          if (code === 'EMAIL_NOT_VERIFIED') {
+            const email = err?.error?.email;
+            if (!email) {
+              this.showError('Your email is not verified. Please check your inbox.');
+              return;
+            }
+
+            // Navigate to Email Verification page inside Angular zone
+            this.zone.run(() => {
+              this.router.navigate(['/email-verify'], {
+                state: { email, code, message },
+              });
+            });
+
+            return;
+          }
+
+          const errorMsg = err?.error?.message || 'Registration failed. Try again.';
+          this.showError(errorMsg);
         },
       });
   }

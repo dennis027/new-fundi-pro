@@ -14,11 +14,13 @@ import { Workhistory } from './components/workhistory/workhistory';
 import { ProofOfPayment } from './components/proof-of-payment/proof-of-payment';
 import { GigSummary } from './components/gig-summary/gig-summary';
 import { CreditScore } from './components/credit-score/credit-score';
+import { EmailVerification } from './components/auth/email-verification/email-verification';
 
 export const routes: Routes = [
   {path:'home',component:Home},
   {path:'login',component:Login},
   {path:'register',component:Register},
+  {path:'email-verify',component:EmailVerification},
   
   {path:'main-menu',canActivate: [AuthGuard],component:Main, 
     children:[
@@ -31,6 +33,7 @@ export const routes: Routes = [
         {path:'proof-of-payments',canActivate: [AuthGuard],component:ProofOfPayment},
         {path:'gig-summary',canActivate: [AuthGuard],component:GigSummary,},
         {path:'credit-score',canActivate: [AuthGuard],component:CreditScore,},
+
 
         { path: '404', component: NotFound },
         { path: '**', redirectTo: '/404' } 

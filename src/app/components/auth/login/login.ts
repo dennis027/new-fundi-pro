@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   OnInit,
   OnDestroy,
+  NgZone,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -31,6 +32,7 @@ export class Login implements OnInit, OnDestroy {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
 
   // 🔹 Reactive form
   loginForm: FormGroup = this.fb.group({
@@ -94,10 +96,30 @@ export class Login implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         },
         error: (err) => {
+          const code = err?.error?.code;
+          const message = err?.error?.message || 'Login failed. Please try again.';
+
+          // 🔹 EMAIL_NOT_VERIFIED handling
+          if (code === 'EMAIL_NOT_VERIFIED') {
+            const email = err?.error?.email;
+            if (!email) {
+              this.showError('Your email is not verified. Please check your inbox.');
+              return;
+            }
+
+            // Navigate to Email Verification page inside Angular zone
+            this.zone.run(() => {
+              this.router.navigate(['/email-verify'], {
+                state: { email, code, message },
+              });
+            });
+
+            return;
+          }
+
+          // 🔹 Default error handling
           this.showError('Check your credentials.');
-          this.errorMessage.set(
-            err?.error?.message || 'Login failed. Please try again.'
-          );
+          this.errorMessage.set(message);
         },
       });
   }
