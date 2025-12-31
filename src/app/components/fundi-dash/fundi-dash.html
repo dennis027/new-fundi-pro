@@ -1,45 +1,70 @@
-<!-- fundi-dash.html --> <br><br>
+<!-- fundi-dash.html -->
+
+<!-- Hidden menu trigger for AppBar action button -->
+<button 
+  #accountMenuTrigger="matMenuTrigger"
+  [matMenuTriggerFor]="accountMenu"
+  style="display: none;">
+</button>
+
+<!-- Account Menu -->
+<mat-menu style="  justify-content: flex-end !important;" #accountMenu="matMenu">
+  <button mat-menu-item (click)="goToProfile()">
+    <mat-icon>person</mat-icon>
+    <span>Profile</span>
+  </button>
+  <button mat-menu-item (click)="goToSettings()">
+    <mat-icon>settings</mat-icon>
+    <span>Settings</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</mat-menu>
+
 <div class="page">
   
-       @if (isMobile()) {
-        <section class="mobile-nav">
-          <!-- My Gigs -->
-          <div class="nav-card" routerLink="/main-menu/gigs">
-            <i class="material-icons">work_outline</i>
-            <span>My Gigs</span>
-          </div>
+  @if (isMobile()) { <br><br>
+    <section class="mobile-nav">
+      <!-- My Gigs -->
+      <div class="nav-card" routerLink="/main-menu/gigs">
+        <i class="material-icons">work_outline</i>
+        <span>My Gigs</span>
+      </div>
 
-          <!-- M-Pesa / Payments -->
-          <div class="nav-card" routerLink="/main-menu/mpesa">
-            <i class="material-icons">account_balance_wallet</i>
-            <span>MPesa</span>
-          </div>
+      <!-- M-Pesa / Payments -->
+      <div class="nav-card" routerLink="/main-menu/mpesa">
+        <i class="material-icons">account_balance_wallet</i>
+        <span>MPesa</span>
+      </div>
 
-          <!-- Proof of Payment -->
-          <div class="nav-card" routerLink="/main-menu/proof-of-payments">
-            <i class="material-icons">receipt_long</i>
-            <span>Proof of Payment</span>
-          </div>
+      <!-- Proof of Payment -->
+      <div class="nav-card" routerLink="/main-menu/proof-of-payments">
+        <i class="material-icons">receipt_long</i>
+        <span>Proof of Payment</span>
+      </div>
 
-          <!-- Credit Score -->
-          <div class="nav-card" routerLink="/main-menu/credit-score">
-            <i class="material-icons">score</i>
-            <span>Credit Score</span>
-          </div>
+      <!-- Credit Score -->
+      <div class="nav-card" routerLink="/main-menu/credit-score">
+        <i class="material-icons">score</i>
+        <span>Credit Score</span>
+      </div>
 
-          <!-- Work History -->
-          <div class="nav-card" routerLink="/main-menu/work-history">
-            <i class="material-icons">history_toggle_off</i>
-            <span>Work History</span>
-          </div>
+      <!-- Work History -->
+      <div class="nav-card" routerLink="/main-menu/work-history">
+        <i class="material-icons">history_toggle_off</i>
+        <span>Work History</span>
+      </div>
 
-          <!-- Profile -->
-          <div class="nav-card" routerLink="/main-menu/profile">
-            <i class="material-icons">person_outline</i>
-            <span>Profile</span>
-          </div>
-        </section>
-      }
+      <!-- Profile -->
+      <div class="nav-card" routerLink="/main-menu/profile">
+        <i class="material-icons">person_outline</i>
+        <span>Profile</span>
+      </div>
+    </section>
+  }
 
   <!-- 🔥 DESKTOP DASHBOARD - Only visible on desktop -->
   @if (!isMobile()) {
@@ -227,8 +252,6 @@
     </div>
     <p class="score-label">Reliable User</p>
   </section>
-
-
 
   <!-- GIG SUMMARY -->
   <section class="card list-card" routerLink="/main-menu/gig-summary">

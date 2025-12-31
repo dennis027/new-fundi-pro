@@ -1,34 +1,43 @@
 // fundi-dash.component.ts
 
-import { Component, signal, afterNextRender, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, afterNextRender, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { AppBarService } from '../../services/app-bar-service';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-fundi-dash',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule, 
+    RouterModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDividerModule
+  ],
   templateUrl: './fundi-dash.html',
   styleUrls: ['./fundi-dash.css'],
 })
 export class FundiDash implements OnInit, OnDestroy {
-  // Use Signals for modern reactivity
+  @ViewChild('accountMenuTrigger') accountMenuTrigger!: MatMenuTrigger;
+  
   isMobile = signal(false);
   private appBar = inject(AppBarService);
+  private router = inject(Router);
 
   constructor() {
-    // afterNextRender runs ONLY in the browser
     afterNextRender(() => {
       this.checkScreen();
-      
-      // Manual listener for resize events
       window.addEventListener('resize', () => this.checkScreen());
     });
   }
 
   private checkScreen(): void {
-    // Set mobile breakpoint at 992px (lg breakpoint)
     this.isMobile.set(window.innerWidth < 992);
   }
 
@@ -42,14 +51,31 @@ export class FundiDash implements OnInit, OnDestroy {
         icon: 'account_circle',
         ariaLabel: 'Account',
         onClick: () => {
-          console.log('Account clicked');
+          // Trigger the menu programmatically
+          setTimeout(() => {
+            this.accountMenuTrigger?.openMenu();
+          }, 0);
         },
       },
     ]);
   }
 
+  // Menu action handlers
+  goToProfile() {
+    this.router.navigate(['/main-menu/profile']);
+  }
+
+  goToSettings() {
+    this.router.navigate(['/main-menu/settings']);
+  }
+
+  logout() {
+    console.log('Logging out...');
+    // Add your logout logic here
+    this.router.navigate(['/login']);
+  }
+
   ngOnDestroy() {
-    // IMPORTANT: cleanup
     this.appBar.clearActions();
   }
 }
