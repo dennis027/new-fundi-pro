@@ -1,4 +1,4 @@
-<!-- fundi-dash.html -->
+<!-- fundi-dash.component.html -->
 
 <!-- Hidden menu trigger for AppBar action button -->
 <button 
@@ -8,7 +8,7 @@
 </button>
 
 <!-- Account Menu -->
-<mat-menu style="  justify-content: flex-end !important;" #accountMenu="matMenu">
+<mat-menu #accountMenu="matMenu">
   <button mat-menu-item (click)="goToProfile()">
     <mat-icon>person</mat-icon>
     <span>Profile</span>
@@ -26,24 +26,59 @@
 
 <div class="page">
   
-  @if (isMobile()) { <br><br>
+  @if (isMobile()) { 
+    <br><br>
+    
+    <!-- Welcome Card -->
+    <section class="card welcome-card">
+      <div class="welcome-content">
+        <img 
+          [src]="imgFile ? imgUrl + imgFile : 'assets/user.png'" 
+          alt="Profile" 
+          class="profile-avatar"
+        />
+        <div class="welcome-text">
+          <h2>Welcome, {{ username }}!</h2>
+          <p>Keep building. Log your gigs to grow your profile.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Credit Score Card -->
+    <section class="card credit-card">
+      <h3>Credit Score</h3>
+      <div class="score-wrapper">
+        <div class="score-circle" [style.background]="getScoreGradient()">
+          <span>{{ creditScore }}</span>
+        </div>
+      </div>
+      <p class="score-label">{{ creditScore >= 70 ? 'Reliable User' : 'Keep building your profile' }}</p>
+    </section>
+
+    <!-- Quick Actions Grid -->
     <section class="mobile-nav">
-      <!-- My Gigs -->
-      <div class="nav-card" routerLink="/main-menu/gigs">
-        <i class="material-icons">work_outline</i>
-        <span>My Gigs</span>
+      <!-- Log Gig -->
+      <div class="nav-card" routerLink="/main-menu/log-gig">
+        <i class="material-icons">add</i>
+        <span>Log Gig</span>
       </div>
 
-      <!-- M-Pesa / Payments -->
+      <!-- M-Pesa -->
       <div class="nav-card" routerLink="/main-menu/mpesa">
-        <i class="material-icons">account_balance_wallet</i>
-        <span>MPesa</span>
+        <i class="material-icons">payment</i>
+        <span>M-PESA</span>
       </div>
 
       <!-- Proof of Payment -->
       <div class="nav-card" routerLink="/main-menu/proof-of-payments">
-        <i class="material-icons">receipt_long</i>
+        <i class="material-icons">upload_file</i>
         <span>Proof of Payment</span>
+      </div>
+
+      <!-- Search Gigs -->
+      <div class="nav-card" routerLink="/main-menu/search-gig">
+        <i class="material-icons">search</i>
+        <span>Search Gigs</span>
       </div>
 
       <!-- Credit Score -->
@@ -54,19 +89,56 @@
 
       <!-- Work History -->
       <div class="nav-card" routerLink="/main-menu/work-history">
-        <i class="material-icons">history_toggle_off</i>
+        <i class="material-icons">history</i>
         <span>Work History</span>
       </div>
+    </section>
 
-      <!-- Profile -->
-      <div class="nav-card" routerLink="/main-menu/profile">
-        <i class="material-icons">person_outline</i>
-        <span>Profile</span>
+    <!-- Gigs Summary Card -->
+    <section class="card list-card" routerLink="/main-menu/gig-list">
+      <div class="list-item">
+        <i class="material-icons green">work_outline</i>
+        <div>
+          <h4>Gig Summary</h4>
+          <p>{{ verifiedGigs }} Verified / {{ totalGigs }} Total</p>
+        </div>
+        <i class="material-icons">chevron_right</i>
+      </div>
+    </section>
+
+    <!-- Profile Summary Card -->
+    <section class="card profile-card">
+      <h3>Profile Information</h3>
+      <div class="profile-info">
+        <div class="info-row">
+          <i class="material-icons">person</i>
+          <span>{{ fullname }}</span>
+        </div>
+        <div class="info-row">
+          <i class="material-icons">email</i>
+          <span>{{ email }}</span>
+        </div>
+        <div class="info-row">
+          <i class="material-icons">location_on</i>
+          <span>{{ location }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location Reminder Card -->
+    <section class="card location-card">
+      <div class="list-item">
+        <i class="material-icons red">gps_fixed</i>
+        <div>
+          <h4>Location Access</h4>
+          <p>Allow location to verify gigs automatically.</p>
+        </div>
+        <mat-slide-toggle [checked]="true"></mat-slide-toggle>
       </div>
     </section>
   }
 
-  <!-- 🔥 DESKTOP DASHBOARD - Only visible on desktop -->
+  <!-- 🔥 DESKTOP DASHBOARD - Kept your original desktop code -->
   @if (!isMobile()) {
     <!-- Desktop Header -->
     <div class="desktop-header">
@@ -242,7 +314,7 @@
     </div>
   }
 
-  <!-- CREDIT SCORE - Visible on both mobile and desktop -->
+  <!-- CREDIT SCORE - Visible on both mobile and desktop (your original code) -->
   <section class="card credit-card">
     <h3>Credit Score</h3>
     <div class="score-wrapper">
@@ -253,7 +325,7 @@
     <p class="score-label">Reliable User</p>
   </section>
 
-  <!-- GIG SUMMARY -->
+  <!-- GIG SUMMARY (your original code) -->
   <section class="card list-card" routerLink="/main-menu/gig-summary">
     <div class="list-item">
       <i class="material-icons green">work_outline</i>

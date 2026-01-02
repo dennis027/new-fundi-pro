@@ -1,1 +1,136 @@
-<p>add-gig works!</p>
+<br><br>
+<div class="page">
+  <form class="gig-form">
+    
+    <!-- Header Welcome Card -->
+    <div class="card header-card">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="material-icons">work_outline</i>
+        </div>
+        <div class="header-text">
+          <h2>Log New Gig</h2>
+          <p>Record your work to build your profile</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site Selection Card -->
+    <div class="card">
+      <div class="card-title">
+        <i class="material-icons">location_city</i>
+        <span>Work Site</span>
+      </div>
+      
+      <div class="form-group">
+        <label for="site">Select Site *</label>
+        <input 
+          type="text" 
+          id="site" 
+          class="form-control"
+          placeholder="Search for a site..."
+          list="sites-list"
+        />
+        <datalist id="sites-list">
+          <option value="Nairobi Hospital">
+          <option value="KNH - Kenyatta National Hospital">
+          <option value="Aga Khan University Hospital">
+          <option value="MP Shah Hospital">
+        </datalist>
+      </div>
+
+      <!-- Site Details (shown after selection) -->
+      <div class="site-details">
+        <div class="site-details-header">
+          <i class="material-icons">check_circle</i>
+          <span>Site Details</span>
+        </div>
+        <div class="location-info">
+          <div class="location-row">
+            <i class="material-icons">location_on</i>
+            <span class="label">County:</span>
+            <span class="value">Nairobi</span>
+          </div>
+          <div class="location-row">
+            <i class="material-icons">account_balance</i>
+            <span class="label">Constituency:</span>
+            <span class="value">Westlands</span>
+          </div>
+          <div class="location-row">
+            <i class="material-icons">place</i>
+            <span class="label">Ward:</span>
+            <span class="value">Parklands</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Details Card -->
+    <div class="card">
+      <div class="card-title">
+        <i class="material-icons">work</i>
+        <span>Job Details</span>
+      </div>
+
+      <div class="form-group">
+        <label for="job-type">Job Type *</label>
+        <input 
+          type="text" 
+          id="job-type" 
+          class="form-control"
+          placeholder="Select job type..."
+          list="job-types-list"
+        />
+        <datalist id="job-types-list">
+          <option value="Plumbing">
+          <option value="Electrical">
+          <option value="Carpentry">
+          <option value="Painting">
+          <option value="Masonry">
+        </datalist>
+      </div>
+
+      <div class="form-group">
+        <label for="start-date">Start Date *</label>
+        <input 
+          type="date" 
+          id="start-date" 
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label for="duration-unit">Duration Unit *</label>
+          <select id="duration-unit" class="form-control">
+            <option value="">Select unit</option>
+            <option value="days">Days</option>
+            <option value="weeks">Weeks</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label for="duration-value">Value *</label>
+          <input 
+            type="number" 
+            id="duration-value" 
+            class="form-control"
+            placeholder="0"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-btn">
+      <i class="material-icons">send</i>
+      <span>Submit Gig</span>
+    </button>
+
+    <!-- Loading State (hidden by default) -->
+    <button type="button" class="submit-btn loading" style="display: none;">
+      <div class="spinner"></div>
+      <span>Submitting...</span>
+    </button>
+
+  </form>
+</div>

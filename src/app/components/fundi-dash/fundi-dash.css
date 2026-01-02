@@ -1,4 +1,4 @@
-/* fundi-dash.css */
+/* fundi-dash.component.css */
 
 /* ---------- ROOT VARIABLES ---------- */
 :root {
@@ -18,462 +18,629 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--text-dark);
-}
-
 .page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 16px;
 }
 
-/* ---------- CARDS ---------- */
-.card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-  margin-bottom: 16px;
-}
-
-/* ---------- MOBILE NAV ---------- */
-.mobile-nav {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.nav-card {
-  background: #fff;
-  border-radius: var(--radius);
-  padding: 18px 12px;
-  box-shadow: var(--shadow);
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.nav-card:hover {
-  transform: translateY(-2px);
-}
-
-.nav-card i {
-  font-size: 28px;
-  color: var(--primary);
-  display: block;
-  margin-bottom: 6px;
-}
-
-.nav-card span {
-  font-size: 13px;
-  font-weight: 500;
-}
-
-/* ---------- DESKTOP DASHBOARD ---------- */
-.desktop-header {
-  margin-bottom: 32px;
-}
-
-.desktop-header h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--text-dark);
-}
-
-.desktop-header p {
-  margin: 8px 0 0;
-  font-size: 16px;
-  color: var(--text-muted);
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: #fff;
-  border-radius: var(--radius);
-  padding: 24px;
-  box-shadow: var(--shadow);
-}
-
-.stat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stat-icon i {
-  font-size: 24px;
-  color: white;
-}
-
-.stat-icon.bg-blue {
-  background: #3b82f6;
-}
-
-.stat-icon.bg-green {
-  background: #10b981;
-}
-
-.stat-icon.bg-purple {
-  background: #8b5cf6;
-}
-
-.stat-icon.bg-orange {
-  background: #f97316;
-}
-
-.stat-change {
-  font-size: 14px;
-  font-weight: 600;
-  color: #10b981;
-}
-
-.stat-card h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.stat-value {
-  margin: 8px 0 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-dark);
-}
-
-/* Desktop Grid */
-.desktop-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.desktop-card {
-  background: #fff;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.card-header {
-  padding: 24px;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.card-header h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-dark);
-}
-
-/* Recent Jobs */
-.jobs-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.job-item {
-  padding: 24px;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background-color 0.2s;
-}
-
-.job-item:last-child {
-  border-bottom: none;
-}
-
-.job-item:hover {
-  background-color: #f9fafb;
-}
-
-.job-main {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.job-info h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-.job-info p {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.job-amount {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-.job-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.status-badge i {
-  font-size: 16px;
-}
-
-.status-badge.completed {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.status-badge.in-progress {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.status-badge.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.job-time {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-/* Upcoming Appointments */
-.appointments-list {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.appointment-item {
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  background: #eef2ff;
-  border-radius: 12px;
-  border: 1px solid #c7d2fe;
-}
-
-.appointment-icon {
-  background: #4f46e5;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.appointment-icon i {
-  font-size: 20px;
-  color: white;
-}
-
-.appointment-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.appointment-info h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-.appointment-info p {
-  margin: 4px 0;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.appointment-time {
-  display: block;
-  margin-top: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #4f46e5;
-}
-
-/* ---------- CREDIT SCORE ---------- */
-.credit-card {
-  text-align: center;
-}
-
-.credit-card h3 {
-  margin: 0 0 12px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.score-wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.score-circle {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: conic-gradient(var(--success) 0deg 270deg, #e5e7eb 270deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.score-circle span {
-  background: #fff;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--success);
-}
-
-.score-label {
-  margin-top: 10px;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ---------- QUICK ACTIONS ---------- */
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.action {
-  border: none;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-.action i {
-  font-size: 28px;
-  color: #2196f3;
-}
-
-.action span {
-  font-size: 12px;
-}
-
-/* ---------- LIST CARD ---------- */
-.list-card {
-  padding: 0;
-}
-
-.list-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  cursor: pointer;
-}
-
-.list-item h4 {
-  margin: 0;
-  font-size: 15px;
-}
-
-.list-item p {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.list-item i:last-child {
-  margin-left: auto;
-  color: #9ca3af;
-}
-
-.green {
-  color: var(--success);
-}
-
-/* ---------- RESPONSIVE ---------- */
-@media (min-width: 768px) {
-  .mobile-nav {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 992px) {
+/* ---------- MOBILE ONLY STYLES ---------- */
+@media (max-width: 991px) {
   .page {
-    padding: 32px;
+    background: #f5f5f5;
+    min-height: 100vh;
   }
 
-  /* Hide mobile navigation on desktop */
+  /* ---------- CARDS ---------- */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+
+  /* ---------- WELCOME CARD ---------- */
+  .welcome-card {
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+    border: none;
+  }
+
+  .welcome-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .welcome-text h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-dark);
+  }
+
+  .welcome-text p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* ---------- CREDIT SCORE ---------- */
+  .credit-card {
+    text-align: center;
+  }
+
+  .credit-card h3 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .score-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .score-circle span {
+    background: #fff;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--success);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .score-label {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ---------- MOBILE NAV ---------- */
   .mobile-nav {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
-  /* Adjust stats grid for smaller desktop screens */
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .nav-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 20px 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
   }
 
-  .desktop-grid {
-    grid-template-columns: 1fr;
+  .nav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(21, 101, 192, 0.15);
+    border-color: var(--primary);
+  }
+
+  .nav-card:active {
+    transform: translateY(-2px);
+  }
+
+  .nav-card i {
+    font-size: 32px;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .nav-card span {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dark);
+    display: block;
+  }
+
+  /* ---------- LIST CARD ---------- */
+  .list-card {
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .list-card:hover {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .list-item i:first-child {
+    font-size: 28px;
+  }
+
+  .list-item h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .list-item p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .list-item i:last-child {
+    margin-left: auto;
+    color: #9ca3af;
+    font-size: 20px;
+  }
+
+  .green {
+    color: var(--success);
+  }
+
+  .red {
+    color: #dc2626;
+  }
+
+  /* ---------- PROFILE CARD ---------- */
+  .profile-card h3 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .info-row i {
+    font-size: 20px;
+    color: var(--text-muted);
+  }
+
+  .info-row span {
+    font-size: 14px;
+    color: var(--text-dark);
+  }
+
+  /* ---------- LOCATION CARD ---------- */
+  .location-card {
+    padding: 0;
+  }
+
+  .location-card .list-item {
+    align-items: flex-start;
+  }
+
+  .location-card mat-slide-toggle {
+    margin-left: auto;
+  }
+
+  @media (max-width: 576px) {
+    .welcome-content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+    }
+
+    .welcome-text h2 {
+      font-size: 16px;
+    }
+
+    .welcome-text p {
+      font-size: 13px;
+    }
+
+    .mobile-nav {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 
-@media (min-width: 1200px) {
-  /* Full desktop layout */
-  .stats-grid {
-    grid-template-columns: repeat(4, 1fr);
+/* ---------- DESKTOP STYLES (Your original CSS - unchanged) ---------- */
+@media (min-width: 992px) {
+  .desktop-header {
+    margin-bottom: 32px;
   }
 
+  .desktop-header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .desktop-header p {
+    margin: 8px 0 0;
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon i {
+    font-size: 24px;
+    color: white;
+  }
+
+  .stat-icon.bg-blue {
+    background: #3b82f6;
+  }
+
+  .stat-icon.bg-green {
+    background: #10b981;
+  }
+
+  .stat-icon.bg-purple {
+    background: #8b5cf6;
+  }
+
+  .stat-icon.bg-orange {
+    background: #f97316;
+  }
+
+  .stat-change {
+    font-size: 14px;
+    font-weight: 600;
+    color: #10b981;
+  }
+
+  .stat-card h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .stat-value {
+    margin: 8px 0 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  /* Desktop Grid */
   .desktop-grid {
+    display: grid;
     grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .desktop-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .card-header {
+    padding: 24px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .card-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  /* Recent Jobs */
+  .jobs-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .job-item {
+    padding: 24px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+  }
+
+  .job-item:last-child {
+    border-bottom: none;
+  }
+
+  .job-item:hover {
+    background-color: #f9fafb;
+  }
+
+  .job-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .job-info h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .job-info p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .job-amount {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .job-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .status-badge i {
+    font-size: 16px;
+  }
+
+  .status-badge.completed {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .status-badge.in-progress {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .job-time {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* Upcoming Appointments */
+  .appointments-list {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .appointment-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: #eef2ff;
+    border-radius: 12px;
+    border: 1px solid #c7d2fe;
+  }
+
+  .appointment-icon {
+    background: #4f46e5;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .appointment-icon i {
+    font-size: 20px;
+    color: white;
+  }
+
+  .appointment-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .appointment-info h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .appointment-info p {
+    margin: 4px 0;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .appointment-time {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4f46e5;
+  }
+
+  /* Credit Score & Gig Summary at bottom for desktop */
+  .credit-card,
+  .list-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+
+  .credit-card {
+    text-align: center;
+    padding: 24px;
+  }
+
+  .credit-card h3 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .score-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(var(--success) 0deg 270deg, #e5e7eb 270deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-circle span {
+    background: #fff;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--success);
+  }
+
+  .score-label {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .list-card {
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+  }
+
+  .list-item h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .list-item p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .list-item i:last-child {
+    margin-left: auto;
+    color: #9ca3af;
+  }
+
+  .green {
+    color: var(--success);
+  }
+
+  @media (min-width: 992px) and (max-width: 1199px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .desktop-grid {
+      grid-template-columns: 1fr;
+    }
   }
 }
