@@ -1,1 +1,245 @@
-<p>mpesa works!</p>
+<br><br>
+
+<div class="page">
+  
+  <!-- Header Info Card -->
+  <div class="card header-card">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="material-icons">phone_android</i>
+      </div>
+      <div class="header-text">
+        <h2>M-Pesa Transactions</h2>
+        <p>View and manage your mobile money transactions</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner-large"></div>
+      <p>Loading transactions...</p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else if (mpesaMessages().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="material-icons">receipt_long</i>
+      </div>
+      <h3>No Transactions Found</h3>
+      <p>No M-Pesa transactions match your search criteria</p>
+    </div>
+  }
+
+  <!-- Transaction List -->
+  @else {
+    <div class="card">
+      <div class="card-title">
+        <i class="material-icons">list_alt</i>
+        <span>Transaction History ({{ mpesaMessages().length }})</span>
+      </div>
+
+      <div class="transactions-list">
+        @for (msg of mpesaMessages(); track msg.id; let i = $index) {
+          <div class="transaction-card">
+            <!-- Header with Amount -->
+            <div class="transaction-header">
+              <div class="amount-section">
+                <div class="mpesa-icon">
+                  <i class="material-icons">phone_android</i>
+                </div>
+                <span class="amount">KES {{ msg.amount }}</span>
+              </div>
+              <div class="status-badge completed">
+                <i class="material-icons">check_circle</i>
+                <span>Completed</span>
+              </div>
+            </div>
+
+            <!-- Transaction Details -->
+            <div class="detail-box blue">
+              <div class="detail-row">
+                <i class="material-icons">phone</i>
+                <span class="label">Phone:</span>
+                <span class="value">{{ formatPhone(msg.phone_number) }}</span>
+              </div>
+              <div class="detail-row">
+                <i class="material-icons">receipt_long</i>
+                <span class="label">Receipt:</span>
+                <span class="value">{{ msg.mpesa_receipt_number || 'N/A' }}</span>
+              </div>
+            </div>
+
+            <!-- Date Information -->
+            <div class="detail-box gray">
+              <div class="detail-row">
+                <i class="material-icons">access_time</i>
+                <span class="label">Date:</span>
+                <span class="value">{{ formatDate(msg.transaction_date) }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- FAB for Desktop -->
+  @if (!isMobile()) {
+    <button class="fab-desktop" (click)="openPaymentDialog()">
+      <i class="material-icons">add</i>
+      <span>Add Payment</span>
+    </button>
+  }
+
+  <!-- FAB for Mobile -->
+  @if (isMobile()) {
+    <button class="fab-mobile" (click)="openPaymentDialog()">
+      <i class="material-icons">add</i>
+    </button>
+  }
+
+</div>
+
+<!-- Payment Dialog -->
+<div class="dialog-overlay" [class.active]="showPaymentDialog()" (click)="closePaymentDialog()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <div class="dialog-icon">
+        <i class="material-icons">payment</i>
+      </div>
+      <h3>Add New Payment</h3>
+      <button class="dialog-close" (click)="closePaymentDialog()">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+
+    <div class="dialog-content">
+      <div class="form-group">
+        <label for="payment-phone">Phone Number</label>
+        <div class="input-with-icon">
+          <i class="material-icons">phone</i>
+          <input 
+            type="tel" 
+            id="payment-phone" 
+            class="form-control"
+            placeholder="07XX XXX XXX"
+            [(ngModel)]="paymentPhone"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="payment-amount">Amount (KES)</label>
+        <div class="input-with-icon">
+          <i class="material-icons">money</i>
+          <input 
+            type="number" 
+            id="payment-amount" 
+            class="form-control"
+            placeholder="0.00"
+            [(ngModel)]="paymentAmount"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-secondary" (click)="closePaymentDialog()">
+        Cancel
+      </button>
+      <button class="btn-primary" (click)="sendStkPush()">
+        Send STK Push
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Dialog -->
+<div class="dialog-overlay" [class.active]="showFilterDialog()" (click)="closeFilterDialog()">
+  <div class="dialog dialog-large" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <div class="dialog-icon">
+        <i class="material-icons">filter_list</i>
+      </div>
+      <h3>Filter Messages</h3>
+      <button class="dialog-close" (click)="closeFilterDialog()">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+
+    <div class="dialog-content">
+      <div class="form-group">
+        <label for="filter-phone">Phone Number</label>
+        <div class="input-with-icon">
+          <i class="material-icons">phone</i>
+          <input 
+            type="tel" 
+            id="filter-phone" 
+            class="form-control"
+            [(ngModel)]="filterPhone"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="filter-amount">Amount</label>
+        <div class="input-with-icon">
+          <i class="material-icons">money</i>
+          <input 
+            type="number" 
+            id="filter-amount" 
+            class="form-control"
+            [(ngModel)]="filterAmount"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="filter-receipt">Receipt Number</label>
+        <div class="input-with-icon">
+          <i class="material-icons">receipt</i>
+          <input 
+            type="text" 
+            id="filter-receipt" 
+            class="form-control"
+            [(ngModel)]="filterReceipt"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="filter-start-date">Start Date</label>
+          <input 
+            type="date" 
+            id="filter-start-date" 
+            class="form-control"
+            [(ngModel)]="filterStartDate"
+          />
+        </div>
+        <div class="form-group">
+          <label for="filter-end-date">End Date</label>
+          <input 
+            type="date" 
+            id="filter-end-date" 
+            class="form-control"
+            [(ngModel)]="filterEndDate"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-secondary" (click)="clearFilters()">
+        Clear All
+      </button>
+      <button class="btn-primary" (click)="applyFilters()">
+        Apply Filters
+      </button>
+    </div>
+  </div>
+</div>
