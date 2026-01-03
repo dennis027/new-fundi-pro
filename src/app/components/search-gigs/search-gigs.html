@@ -1,1 +1,185 @@
-<p>search-gigs works!</p>
+<div class="page">
+  
+  <!-- Header Info Card -->
+  <div class="card header-card">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="material-icons">search</i>
+      </div>
+      <div class="header-text">
+        <h2>Find Available Gigs</h2>
+        <p>Search by location, job type, or client</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Form Card -->
+  <div class="card">
+    <div class="card-title">
+      <i class="material-icons">filter_list</i>
+      <span>Search Filters</span>
+    </div>
+
+    <form class="search-form">
+      <div class="form-group">
+        <label for="county">County</label>
+        <div class="input-with-icon">
+          <i class="material-icons">location_city</i>
+          <select 
+            id="county" 
+            class="form-control"
+            [(ngModel)]="selectedCounty"
+            (change)="onCountyChanged()"
+            name="county"
+          >
+            <option value="">Select county</option>
+            @for (county of counties; track county) {
+              <option [value]="county">{{ county }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="constituency">Constituency</label>
+        <div class="input-with-icon">
+          <i class="material-icons">account_balance</i>
+          <select 
+            id="constituency" 
+            class="form-control"
+            [(ngModel)]="selectedConstituency"
+            (change)="onConstituencyChanged()"
+            name="constituency"
+            [disabled]="!selectedCounty"
+          >
+            <option value="">Select constituency</option>
+            @for (constituency of constituencies; track constituency) {
+              <option [value]="constituency">{{ constituency }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="ward">Ward</label>
+        <div class="input-with-icon">
+          <i class="material-icons">apartment</i>
+          <select 
+            id="ward" 
+            class="form-control"
+            [(ngModel)]="selectedWard"
+            name="ward"
+            [disabled]="!selectedConstituency"
+          >
+            <option value="">Select ward</option>
+            @for (ward of wards; track ward) {
+              <option [value]="ward">{{ ward }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="client-name">Client Name</label>
+        <div class="input-with-icon">
+          <i class="material-icons">person</i>
+          <input 
+            type="text" 
+            id="client-name" 
+            class="form-control"
+            placeholder="Enter client name"
+            [(ngModel)]="clientName"
+            name="clientName"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="job-type">Job Type</label>
+        <div class="input-with-icon">
+          <i class="material-icons">work</i>
+          <select 
+            id="job-type" 
+            class="form-control"
+            [(ngModel)]="selectedJobType"
+            name="jobType"
+          >
+            <option value="">Select job type</option>
+            @for (jobType of jobTypes; track jobType.id) {
+              <option [value]="jobType.id">{{ jobType.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Search Button -->
+      <button 
+        type="button"
+        class="submit-btn" 
+        [class.disabled]="isSearchDisabled()"
+        [disabled]="isSearchDisabled()"
+        (click)="searchGigs()"
+      >
+        @if (isLoading()) {
+          <div class="spinner"></div>
+          <span>Searching...</span>
+        } @else {
+          <i class="material-icons">search</i>
+          <span>Search Gigs</span>
+        }
+      </button>
+    </form>
+  </div>
+
+  <!-- Results Section -->
+  @if (hasSearched()) {
+    <div class="card">
+      <div class="card-title">
+        <i class="material-icons">list_alt</i>
+        <span>Search Results ({{ searchResults().length }})</span>
+      </div>
+
+      @if (searchResults().length === 0 && !isLoading()) {
+        <!-- Empty State -->
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="material-icons">work_off</i>
+          </div>
+          <h3>No Jobs Available</h3>
+          <p>Try adjusting your search criteria or check back later</p>
+        </div>
+      } @else {
+        <!-- Results List -->
+        <div class="results-list">
+          @for (gig of searchResults(); track gig.id; let i = $index) {
+            <div class="gig-card">
+              <div class="gig-header">
+                <div class="gig-icon">
+                  <i class="material-icons">work_outline</i>
+                </div>
+                <div class="gig-info">
+                  <h3>{{ gig.job_type }}</h3>
+                  <div class="gig-detail">
+                    <i class="material-icons">person</i>
+                    <span>{{ gig.client_name || 'No client specified' }}</span>
+                  </div>
+                  <div class="gig-detail location">
+                    <i class="material-icons">location_on</i>
+                    <span>{{ gig.county }} > {{ gig.constituency }} > {{ gig.ward }}</span>
+                  </div>
+                </div>
+                @if (gig.is_verified) {
+                  <div class="verified-badge">
+                    <i class="material-icons">verified</i>
+                    <span>Verified</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+</div>
