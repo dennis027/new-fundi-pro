@@ -1,0 +1,403 @@
+/* gig-summary.component.css */
+
+/* ---------- ROOT VARIABLES ---------- */
+:root {
+  --primary: #1565C0;
+  --primary-light: #E3F2FD;
+  --bg: #f5f5f5;
+  --card-bg: #ffffff;
+  --text-dark: #1f2933;
+  --text-muted: #6b7280;
+  --success: #2e7d32;
+  --success-light: #e8f5e9;
+  --success-border: #81c784;
+  --warning: #f97316;
+  --warning-light: #fed7aa;
+  --warning-border: #fb923c;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --border: #e5e7eb;
+}
+
+/* ---------- BASE ---------- */
+* {
+  box-sizing: border-box;
+}
+
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 16px;
+}
+
+/* ---------- LOADING STATE ---------- */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+}
+
+.spinner-large {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(21, 101, 192, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px;
+  text-align: center;
+  min-height: 70vh;
+}
+
+.empty-icon {
+  width: 120px;
+  height: 120px;
+  background: var(--primary-light);
+  border: 2px solid #90caf9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.empty-icon i {
+  font-size: 64px;
+  color: var(--primary);
+}
+
+.empty-state h3 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.empty-state p {
+  margin: 0 0 32px;
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.add-first-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
+  font-family: inherit;
+}
+
+.add-first-btn:hover {
+  background: #0d47a1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(21, 101, 192, 0.4);
+}
+
+.add-first-btn:active {
+  transform: translateY(0);
+}
+
+.add-first-btn i {
+  font-size: 20px;
+}
+
+/* ---------- GIGS LIST ---------- */
+.gigs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- GIG CARD ---------- */
+.gig-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.gig-card.verified {
+  background: var(--success-light);
+  border: 1.5px solid var(--success-border);
+}
+
+.gig-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-dark);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Status Badge */
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.status-badge.approved {
+  background: var(--success-light);
+  border: 1px solid var(--success-border);
+  color: #065f46;
+}
+
+.status-badge.pending {
+  background: var(--warning-light);
+  border: 1px solid var(--warning-border);
+  color: #92400e;
+}
+
+.status-badge i {
+  font-size: 16px;
+}
+
+/* Info Boxes */
+.info-box {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.info-box:last-child {
+  margin-bottom: 0;
+}
+
+.client-info {
+  background: var(--primary-light);
+  border: 1px solid #90caf9;
+}
+
+.location-info {
+  background: #fafafa;
+  border: 1px solid var(--border);
+}
+
+.job-details {
+  background: var(--warning-light);
+  border: 1px solid var(--warning-border);
+}
+
+.job-details.verified-bg {
+  background: #d1fae5;
+  border: 1px solid #86efac;
+}
+
+/* Info Rows */
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-row i {
+  font-size: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.info-row .label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.info-row .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  flex: 1;
+  word-break: break-word;
+}
+
+/* ---------- RESPONSIVE - MOBILE ---------- */
+@media (max-width: 767px) {
+  .page {
+    padding: 12px;
+  }
+
+  .gig-card {
+    padding: 14px;
+  }
+
+  .card-header h3 {
+    font-size: 16px;
+  }
+
+  .status-badge {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .empty-state {
+    padding: 60px 24px;
+  }
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .empty-icon i {
+    font-size: 56px;
+  }
+
+  .empty-state h3 {
+    font-size: 20px;
+  }
+
+  .empty-state p {
+    font-size: 15px;
+  }
+}
+
+/* ---------- RESPONSIVE - TABLET ---------- */
+@media (min-width: 768px) {
+  .page {
+    padding: 24px;
+  }
+
+  .gigs-list {
+    gap: 16px;
+  }
+
+  .gig-card {
+    padding: 20px;
+  }
+
+  .card-header h3 {
+    font-size: 20px;
+  }
+
+  .status-badge {
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+
+  .info-row {
+    margin-bottom: 10px;
+  }
+
+  .info-row i {
+    font-size: 18px;
+  }
+
+  .info-row .label,
+  .info-row .value {
+    font-size: 15px;
+  }
+}
+
+/* ---------- RESPONSIVE - DESKTOP ---------- */
+@media (min-width: 992px) {
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  .gigs-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .gig-card {
+    padding: 24px;
+  }
+
+  .empty-state {
+    padding: 100px 32px;
+  }
+
+  .empty-icon {
+    width: 140px;
+    height: 140px;
+  }
+
+  .empty-icon i {
+    font-size: 72px;
+  }
+
+  .empty-state h3 {
+    font-size: 28px;
+  }
+
+  .empty-state p {
+    font-size: 18px;
+  }
+}
+
+/* ---------- RESPONSIVE - LARGE DESKTOP ---------- */
+@media (min-width: 1200px) {
+  .page {
+    max-width: 1400px;
+  }
+
+  .gigs-list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
