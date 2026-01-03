@@ -1,1 +1,103 @@
-<p>workhistory works!</p>
+<div class="page">
+  
+  <!-- Stats Header -->
+  @if (!isLoading() && workHistory().length > 0) {
+    <div class="stats-header">
+      <i class="material-icons">bar_chart</i>
+      <span>{{ workHistory().length }} Total Gigs</span>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="loading-box">
+        <div class="spinner-large"></div>
+      </div>
+      <p>Loading your work history...</p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else if (workHistory().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="material-icons">work_off</i>
+      </div>
+      <h3>No Work History Yet</h3>
+      <p>Start your journey by adding your first gig!</p>
+    </div>
+  }
+
+  <!-- Work History List -->
+  @else {
+    <div class="history-list">
+      @for (gig of workHistory(); track gig.id; let i = $index) {
+        <div class="gig-card">
+          <!-- Header -->
+          <div class="card-header">
+            <div class="icon-box">
+              <i class="material-icons">work</i>
+            </div>
+            <div class="header-info">
+              <h3>Work Gig</h3>
+              <p>{{ formatDate(gig.created_at) }}</p>
+            </div>
+          </div>
+
+          <!-- Details -->
+          <div class="card-details">
+            <div class="detail-row">
+              <div class="detail-icon green">
+                <i class="material-icons">calendar_today</i>
+              </div>
+              <div class="detail-info">
+                <span class="label">Start Date</span>
+                <span class="value">{{ gig.start_date || 'Not specified' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-icon orange">
+                <i class="material-icons">access_time</i>
+              </div>
+              <div class="detail-info">
+                <span class="label">Duration</span>
+                <span class="value">{{ gig.duration_value || 'N/A' }} {{ gig.duration_unit || '' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-icon purple">
+                <i class="material-icons">person</i>
+              </div>
+              <div class="detail-info">
+                <span class="label">Client</span>
+                <span class="value">{{ gig.client_name || 'Unknown' }} • {{ gig.client_phone || 'No phone' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-icon red">
+                <i class="material-icons">location_on</i>
+              </div>
+              <div class="detail-info">
+                <span class="label">Location</span>
+                <span class="value">{{ gig.ward }}, {{ gig.constituency }}, {{ gig.county }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Add Button -->
+  <div class="add-button-container">
+    <button class="add-button" (click)="addNewHistory()">
+      <i class="material-icons">add</i>
+      <span>Add New History</span>
+    </button>
+  </div>
+
+</div>
