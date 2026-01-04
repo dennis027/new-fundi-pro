@@ -1,1 +1,219 @@
-<p>proof-of-payment works!</p>
+<div class="page">
+  
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab() === 'smart'"
+      (click)="setActiveTab('smart')"
+    >
+      <i class="material-icons">auto_awesome</i>
+      <span>Smart Upload</span>
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab() === 'manual'"
+      (click)="setActiveTab('manual')"
+    >
+      <i class="material-icons">edit</i>
+      <span>Manual Entry</span>
+    </button>
+  </div>
+
+  <!-- Smart Upload Tab -->
+  @if (activeTab() === 'smart') {
+    <div class="tab-content">
+      
+      <!-- Instructions Card -->
+      <div class="info-card smart">
+        <div class="card-header">
+          <i class="material-icons">auto_awesome</i>
+          <span>Smart Screenshot Upload</span>
+        </div>
+        <ul>
+          <li>Upload your M-Pesa confirmation screenshot</li>
+          <li>We'll automatically extract the transaction details</li>
+          <li>Ensure the screenshot shows the complete message</li>
+          <li>You can edit the details manually if needed</li>
+        </ul>
+      </div>
+
+      <!-- Screenshot Upload Area -->
+      <div class="upload-area" (click)="openFilePicker()">
+        @if (screenshot()) {
+          <div class="preview-container">
+            <img [src]="screenshot()" alt="Screenshot preview" class="preview-image">
+            <div class="preview-status">
+              @if (isAnalyzing()) {
+                <div class="analyzing">
+                  <div class="spinner"></div>
+                  <span>Analyzing screenshot...</span>
+                </div>
+              } @else if (isAutoFilled()) {
+                <div class="success">
+                  <i class="material-icons">check_circle</i>
+                  <span>Details extracted successfully!</span>
+                </div>
+              } @else if (analysisError()) {
+                <div class="error">
+                  <i class="material-icons">warning</i>
+                  <span>{{ analysisError() }}</span>
+                </div>
+                <button class="link-btn" (click)="$event.stopPropagation(); setActiveTab('manual')">
+                  Enter details manually
+                </button>
+              } @else {
+                <div class="info">
+                  <i class="material-icons">image</i>
+                  <span>Screenshot selected</span>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="upload-placeholder">
+            <i class="material-icons">add_photo_alternate</i>
+            <h3>Upload M-Pesa Screenshot</h3>
+            <p>Tap to select from your device</p>
+          </div>
+        }
+      </div>
+
+      <!-- Hidden file input -->
+      <input 
+        #fileInput 
+        type="file" 
+        accept="image/*" 
+        style="display: none"
+        (change)="onFileSelected($event)"
+      >
+
+      <!-- Extracted Details Card -->
+      @if (isAutoFilled()) {
+        <div class="extracted-card">
+          <div class="card-header">
+            <i class="material-icons">auto_awesome</i>
+            <span>Extracted Details</span>
+          </div>
+          <div class="details-content">
+            <div class="detail-row">
+              <span class="label">Amount:</span>
+              <span class="value">KES {{ amount() }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Transaction Code:</span>
+              <span class="value">{{ transactionCode() }}</span>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn-secondary" (click)="setActiveTab('manual')">
+              Edit Details
+            </button>
+            <button class="btn-primary" (click)="submitPayment()" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <div class="spinner"></div>
+                <span>Submitting...</span>
+              } @else {
+                <span>Submit</span>
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Remove Screenshot Button -->
+      @if (screenshot()) {
+        <button class="remove-btn" (click)="removeScreenshot()">
+          <i class="material-icons">delete</i>
+          <span>Remove Screenshot</span>
+        </button>
+      }
+
+    </div>
+  }
+
+  <!-- Manual Entry Tab -->
+  @if (activeTab() === 'manual') {
+    <div class="tab-content">
+      
+      <!-- Instructions Card -->
+      <div class="info-card manual">
+        <div class="card-header">
+          <i class="material-icons">edit</i>
+          <span>Manual Entry</span>
+        </div>
+        <p>{{ isAutoFilled() ? 'Review and edit the auto-filled details below:' : 'Enter your payment details manually:' }}</p>
+      </div>
+
+      <!-- Form -->
+      <form class="payment-form">
+        <div class="form-group">
+          <label for="amount">Amount (KES) *</label>
+          <div class="input-with-icon" [class.auto-filled]="isAutoFilled()">
+            <i class="material-icons">attach_money</i>
+            <input 
+              type="number" 
+              id="amount" 
+              class="form-control"
+              placeholder="Enter amount"
+              [(ngModel)]="amount"
+              name="amount"
+              required
+            >
+            @if (isAutoFilled()) {
+              <i class="material-icons suffix">auto_awesome</i>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="code">Transaction Code *</label>
+          <div class="input-with-icon" [class.auto-filled]="isAutoFilled()">
+            <i class="material-icons">confirmation_number</i>
+            <input 
+              type="text" 
+              id="code" 
+              class="form-control"
+              placeholder="Enter transaction code"
+              [(ngModel)]="transactionCode"
+              name="transactionCode"
+              required
+            >
+            @if (isAutoFilled()) {
+              <i class="material-icons suffix">auto_awesome</i>
+            }
+          </div>
+        </div>
+
+        <!-- Screenshot Required Notice -->
+        @if (!screenshot()) {
+          <div class="warning-card">
+            <i class="material-icons">warning</i>
+            <div>
+              <strong>Screenshot Required</strong>
+              <p>Please upload a screenshot in the first tab to complete your submission.</p>
+            </div>
+          </div>
+        }
+
+        <!-- Submit Button -->
+        <button 
+          type="button"
+          class="submit-btn" 
+          (click)="submitPayment()"
+          [disabled]="isSubmitting() || !screenshot() || !amount() || !transactionCode()"
+        >
+          @if (isSubmitting()) {
+            <div class="spinner"></div>
+            <span>Submitting...</span>
+          } @else {
+            <i class="material-icons">upload</i>
+            <span>Submit Payment</span>
+          }
+        </button>
+      </form>
+
+    </div>
+  }
+
+</div>
