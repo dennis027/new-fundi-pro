@@ -16,6 +16,7 @@ import { GigSummary } from './components/gig-summary/gig-summary';
 import { CreditScore } from './components/credit-score/credit-score';
 import { EmailVerification } from './components/auth/email-verification/email-verification';
 import { Dash404 } from './components/dash-404/dash-404';
+import { Verification } from './components/verification/verification';
 
 export const routes: Routes = [
   {path:'home',component:Home},
@@ -34,6 +35,7 @@ export const routes: Routes = [
         {path:'proof-of-payments',canActivate: [AuthGuard],component:ProofOfPayment},
         {path:'gig-summary',canActivate: [AuthGuard],component:GigSummary,},
         {path:'credit-score',canActivate: [AuthGuard],component:CreditScore,},
+        {path:'verification-status',canActivate: [AuthGuard],component:Verification,},
 
 
         { path: '404', component: Dash404 },

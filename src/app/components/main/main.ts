@@ -44,7 +44,7 @@ export class Main {
 
   onNavLinkClick() {
     if (window.innerWidth < 992) {
-      this.closeSidebar();
+      this.closeSidebar(); 
     }
   }
 

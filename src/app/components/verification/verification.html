@@ -1,0 +1,149 @@
+<div class="verification-container">
+  <!-- Info Banner -->
+  <div class="info-banner">
+    <i class="fas fa-info-circle"></i>
+    <p>Please capture clear images of your ID and a selfie for verification</p>
+  </div>
+
+  <!-- Image Cards -->
+  <div class="image-grid">
+    <!-- ID Front -->
+    <div 
+      class="image-card" 
+      [style.border-color]="imagePreviews['idFront'] ? imageConfig['idFront'].color : '#e0e0e0'"
+      (click)="openImagePicker('idFront')">
+      <div class="image-content" *ngIf="!imagePreviews['idFront']">
+        <div class="icon-circle" [style.background-color]="imageConfig['idFront'].color + '1A'">
+          <i [class]="imageConfig['idFront'].icon" [style.color]="imageConfig['idFront'].color"></i>
+        </div>
+        <h3 [style.color]="imageConfig['idFront'].color">{{ imageConfig['idFront'].title }}</h3>
+        <p class="tap-hint">Tap to capture</p>
+      </div>
+      <div class="image-preview" *ngIf="imagePreviews['idFront']">
+        <img [src]="imagePreviews['idFront']" alt="ID Front">
+        <div class="check-badge" [style.background-color]="imageConfig['idFront'].color">
+          <i class="fas fa-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- ID Back -->
+    <div 
+      class="image-card" 
+      [style.border-color]="imagePreviews['idBack'] ? imageConfig['idBack'].color : '#e0e0e0'"
+      (click)="openImagePicker('idBack')">
+      <div class="image-content" *ngIf="!imagePreviews['idBack']">
+        <div class="icon-circle" [style.background-color]="imageConfig['idBack'].color + '1A'">
+          <i [class]="imageConfig['idBack'].icon" [style.color]="imageConfig['idBack'].color"></i>
+        </div>
+        <h3 [style.color]="imageConfig['idBack'].color">{{ imageConfig['idBack'].title }}</h3>
+        <p class="tap-hint">Tap to capture</p>
+      </div>
+      <div class="image-preview" *ngIf="imagePreviews['idBack']">
+        <img [src]="imagePreviews['idBack']" alt="ID Back">
+        <div class="check-badge" [style.background-color]="imageConfig['idBack'].color">
+          <i class="fas fa-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selfie -->
+    <div 
+      class="image-card" 
+      [style.border-color]="imagePreviews['selfie'] ? imageConfig['selfie'].color : '#e0e0e0'"
+      (click)="openImagePicker('selfie')">
+      <div class="image-content" *ngIf="!imagePreviews['selfie']">
+        <div class="icon-circle" [style.background-color]="imageConfig['selfie'].color + '1A'">
+          <i [class]="imageConfig['selfie'].icon" [style.color]="imageConfig['selfie'].color"></i>
+        </div>
+        <h3 [style.color]="imageConfig['selfie'].color">{{ imageConfig['selfie'].title }}</h3>
+        <p class="tap-hint">Tap to capture</p>
+      </div>
+      <div class="image-preview" *ngIf="imagePreviews['selfie']">
+        <img [src]="imagePreviews['selfie']" alt="Selfie">
+        <div class="check-badge" [style.background-color]="imageConfig['selfie'].color">
+          <i class="fas fa-check"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Progress -->
+  <div class="upload-progress" *ngIf="isSubmitting">
+    <p class="progress-text">Uploading verification documents...</p>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+    </div>
+    <p class="progress-percentage">{{ uploadProgress }}% Complete</p>
+  </div>
+
+  <!-- Submit Button -->
+  <button 
+    class="submit-btn" 
+    [disabled]="isSubmitting || !images.idFront || !images.idBack || !images.selfie"
+    (click)="submitVerification()">
+    <span *ngIf="!isSubmitting">Submit Verification</span>
+    <div class="spinner" *ngIf="isSubmitting"></div>
+  </button>
+</div>
+
+<!-- Source Selection Dialog -->
+<div class="dialog-overlay" *ngIf="showSourceDialog" (click)="closeSourceDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-handle"></div>
+    <h2>Choose {{ getImageTypeLabel(currentImageType!) }} Source</h2>
+    
+    <div class="source-buttons">
+      <button class="source-btn" (click)="openCamera()">
+        <i class="fas fa-camera"></i>
+        <span>Camera</span>
+      </button>
+      <button class="source-btn" (click)="openGallery()">
+        <i class="fas fa-images"></i>
+        <span>Gallery</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Camera Dialog -->
+<div class="camera-overlay" *ngIf="showCameraDialog">
+  <div class="camera-content">
+    <div class="camera-header">
+      <h2>{{ getImageTypeLabel(currentImageType!) }}</h2>
+      <button class="close-camera-btn" (click)="closeCameraDialog()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="camera-view">
+      <video 
+        #videoElement 
+        autoplay 
+        playsinline
+        muted
+        [class.ready]="isCameraReady">
+      </video>
+      
+      <div class="camera-loading" *ngIf="!isCameraReady">
+        <div class="spinner-large"></div>
+        <p>Starting camera...</p>
+      </div>
+
+      <div class="camera-overlay-frame" *ngIf="isCameraReady"></div>
+    </div>
+
+    <div class="camera-controls">
+      <button 
+        class="capture-btn" 
+        (click)="capturePhoto()"
+        [disabled]="!isCameraReady">
+        <i class="fas fa-camera"></i>
+        <span>Capture Photo</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden canvas for photo capture -->
+<canvas #canvas style="display: none;"></canvas>
