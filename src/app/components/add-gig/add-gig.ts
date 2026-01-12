@@ -156,6 +156,7 @@ export class AddGig implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    console.log('Submitting gig form', this.gigForm.value);
     if (this.gigForm.invalid) {
       this.gigForm.markAllAsTouched();
       console.log('Form is invalid');

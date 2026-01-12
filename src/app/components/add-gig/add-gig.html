@@ -1,6 +1,6 @@
 <br><br>
 <div class="page">
-  <form class="gig-form">
+  <form class="gig-form"  [formGroup]="gigForm">
     
     <!-- Header Welcome Card -->
     <div class="card header-card">
@@ -21,45 +21,59 @@
         <i class="material-icons">location_city</i>
         <span>Work Site</span>
       </div>
-      
+
       <div class="form-group">
         <label for="site">Select Site *</label>
-        <input 
-          type="text" 
-          id="site" 
+        <input
+          type="text"
+          id="site"
           class="form-control"
           placeholder="Search for a site..."
           list="sites-list"
+          formControlName="site"
+          
         />
         <datalist id="sites-list">
-          <option value="Nairobi Hospital">
-          <option value="KNH - Kenyatta National Hospital">
-          <option value="Aga Khan University Hospital">
-          <option value="MP Shah Hospital">
+          <option
+            *ngFor="let org of organizations"
+            [value]="org.name"
+          ></option>
         </datalist>
       </div>
 
-      <!-- Site Details (shown after selection) -->
-      <div class="site-details">
+      <!-- Site Details -->
+      <div
+        class="site-details"
+        *ngIf="selectedOrganization()"
+      >
         <div class="site-details-header">
           <i class="material-icons">check_circle</i>
           <span>Site Details</span>
         </div>
+
         <div class="location-info">
           <div class="location-row">
             <i class="material-icons">location_on</i>
             <span class="label">County:</span>
-            <span class="value">Nairobi</span>
+            <span class="value">
+              {{ selectedOrganization()?.county }}
+            </span>
           </div>
+
           <div class="location-row">
             <i class="material-icons">account_balance</i>
             <span class="label">Constituency:</span>
-            <span class="value">Westlands</span>
+            <span class="value">
+              {{ selectedOrganization()?.constituency }}
+            </span>
           </div>
+
           <div class="location-row">
             <i class="material-icons">place</i>
             <span class="label">Ward:</span>
-            <span class="value">Parklands</span>
+            <span class="value">
+              {{ selectedOrganization()?.ward }}
+            </span>
           </div>
         </div>
       </div>
@@ -74,54 +88,65 @@
 
       <div class="form-group">
         <label for="job-type">Job Type *</label>
-        <input 
-          type="text" 
-          id="job-type" 
+        <input
+          type="text"
+          id="job-type"
           class="form-control"
           placeholder="Select job type..."
           list="job-types-list"
+          formControlName="jobType"
         />
         <datalist id="job-types-list">
-          <option value="Plumbing">
-          <option value="Electrical">
-          <option value="Carpentry">
-          <option value="Painting">
-          <option value="Masonry">
+          <option
+            *ngFor="let job of jobTypes"
+            [value]="job.name"
+          ></option>
         </datalist>
       </div>
 
       <div class="form-group">
         <label for="start-date">Start Date *</label>
-        <input 
-          type="date" 
-          id="start-date" 
+        <input
+          type="date"
+          id="start-date"
           class="form-control"
+          formControlName="startDate"
         />
       </div>
 
       <div class="form-row">
         <div class="form-group flex-2">
           <label for="duration-unit">Duration Unit *</label>
-          <select id="duration-unit" class="form-control">
+          <select
+            id="duration-unit"
+            class="form-control"
+            formControlName="durationUnit"
+          >
             <option value="">Select unit</option>
-            <option value="days">Days</option>
-            <option value="weeks">Weeks</option>
+            <option
+              *ngFor="let unit of durationUnits"
+              [value]="unit.value"
+            >
+              {{ unit.label }}
+            </option>
           </select>
         </div>
+
         <div class="form-group flex-1">
           <label for="duration-value">Value *</label>
-          <input 
-            type="number" 
-            id="duration-value" 
+          <input
+            type="number"
+            id="duration-value"
             class="form-control"
             placeholder="0"
+            formControlName="durationValue"
           />
         </div>
       </div>
     </div>
 
     <!-- Submit Button -->
-    <button type="submit" class="submit-btn">
+    <button type="submit" (click)="onSubmit()" class="submit-btn">
       <i class="material-icons">send</i>
       <span>Submit Gig</span>
     </button>
