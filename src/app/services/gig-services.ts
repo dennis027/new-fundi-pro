@@ -39,6 +39,10 @@ export class GigServices {
   creditScoreHistory(): Observable<any> {
     return this.http.get<any>(this.apiUrl + 'credit-history/'); 
   }
+
+  getOrganizations(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'organizations/'); 
+  } 
 }
 
  

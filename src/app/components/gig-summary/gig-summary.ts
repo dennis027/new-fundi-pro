@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AppBarService } from '../../services/app-bar-service';
+import { GigServices } from '../../services/gig-services';
 
 interface Gig {
   id: number;
@@ -43,6 +44,7 @@ export class GigSummary implements OnInit, OnDestroy {
 
   private appBar = inject(AppBarService);
   private router = inject(Router);
+  private gigServices = inject(GigServices);
 
   // Job types map
   private jobTypesMap: Map<number, string> = new Map();
@@ -124,6 +126,14 @@ export class GigSummary implements OnInit, OnDestroy {
 
     this.appBar.setActions([
       {
+        id: 'add-gig',
+        icon: 'add',
+        ariaLabel: 'Add Gigs',
+        onClick: () => {
+          console.log('Navigate to Add Gig');
+        },
+      },
+      {
         id: 'refresh',
         icon: 'refresh',
         ariaLabel: 'Refresh Gigs',
@@ -134,6 +144,19 @@ export class GigSummary implements OnInit, OnDestroy {
     ]);
 
     this.fetchGigs();
+
+    this.gigServices.getOrganizations().subscribe({
+      next: (data) => {
+        console.log('Organizations:', data);
+      },
+      error: (error) => {
+        console.error('Error fetching organizations:', error);
+
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
