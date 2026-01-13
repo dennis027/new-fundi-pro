@@ -61,6 +61,10 @@ export class GigSummary implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(MatDialog);
 
+  userRelatedGigs: Gig[] = [];
+  organizations: any[] = [];
+
+
   jobTypes: JobType[] = [
     { id: 1, name: 'Plumbing' },
     { id: 2, name: 'Electrical' },
@@ -164,16 +168,17 @@ export class GigSummary implements OnInit, OnDestroy {
     this.initGigForm();
 
     if (isPlatformBrowser(this.platformId)) {
-      this.fetchGigs();
       this.getOrganizations();
       this.getGigsAvailable();
       this.getGigType();
+      this.getUserRelatedGigs();
+      this.fetchGigs();
     }
   }
 
   initGigForm(): void {
     this.gigForm = this.fb.group({
-      job_type: ['', Validators.required],
+      job_type: [''],
       start_date: ['', Validators.required],
       duration_value: [null, [Validators.required, Validators.min(1)]],
       duration_unit: ['', Validators.required],
@@ -190,6 +195,7 @@ export class GigSummary implements OnInit, OnDestroy {
     this.gigServices.getOrganizations().subscribe({
       next: (data) => {
         console.log('Organizations:', data);
+        this.organizations = data;
       },
       error: (error) => {
         console.error('Error fetching organizations:', error);
@@ -228,6 +234,21 @@ export class GigSummary implements OnInit, OnDestroy {
     });
   }
 
+  getUserRelatedGigs(): void {
+    this.gigServices.userRelatedGigs().subscribe({
+      next: (data) => {
+        console.log('User Related Gigs:', data);
+        this.userRelatedGigs = data;
+      },
+      error: (error) => {
+        console.error('Error fetching user related gigs:', error);
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
+  }
+
   ngOnDestroy(): void {
     this.appBar.clearActions();
     if (this.dialogRef) {
@@ -245,7 +266,7 @@ export class GigSummary implements OnInit, OnDestroy {
 
     // Simulate API call
     setTimeout(() => {
-      this.gigs.set([...this.mockGigs]);
+      this.gigs.set([...this.userRelatedGigs]);
       this.isLoading.set(false);
     }, 1000);
   }
@@ -311,10 +332,10 @@ export class GigSummary implements OnInit, OnDestroy {
       console.log('Gig added successfully!');
     }, 1500);
 
-    /*
-      REAL API IMPLEMENTATION:
+    
+      // REAL API IMPLEMENTATION:
       
-      this.gigServices.createGig(payload).subscribe({
+      this.gigServices.addGig(payload).subscribe({
         next: (response) => {
           this.isSubmitting.set(false);
           this.closeDialog();
@@ -325,7 +346,7 @@ export class GigSummary implements OnInit, OnDestroy {
           this.isSubmitting.set(false);
         }
       });
-    */
+    
   }
 
   hasError(fieldName: string): boolean {

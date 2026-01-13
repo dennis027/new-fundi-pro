@@ -1,4 +1,5 @@
 
+<br><br>
 <div class="page">
   
   <!-- Desktop Action Bar -->
@@ -164,13 +165,17 @@
         
         <div class="form-group">
           <label>Client Name *</label>
-          <input
-            type="text"
-            class="form-control"
+          
+        <select 
+            class="form-control" 
             [class.error]="hasError('client_name')"
             formControlName="client_name"
-            placeholder="Enter client name"
-          />
+          >
+            <option value="">Select Client</option>
+            <option *ngFor="let c of organizations" [value]="c.id">
+              {{ c.name }}
+            </option>
+          </select>
           @if (hasError('client_name')) {
             <span class="error-message">{{ getErrorMessage('client_name') }}</span>
           }
