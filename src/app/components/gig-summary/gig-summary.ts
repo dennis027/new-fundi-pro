@@ -1,12 +1,20 @@
 // gig-summary.component.ts
 
-import { afterNextRender, Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { afterNextRender, Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AppBarService } from '../../services/app-bar-service';
 import { GigServices } from '../../services/gig-services';
+import { SharedImports } from '../../shared-imports/imports';
+
+interface JobType {
+  id: number;
+  name: string;
+}
 
 interface Gig {
   id: number;
@@ -22,36 +30,38 @@ interface Gig {
   is_verified: boolean;
 }
 
-interface JobType {
-  id: number;
-  name: string;
-}
-
 @Component({
   selector: 'app-gig-summary',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule,
+    SharedImports
   ],
   templateUrl: './gig-summary.html',
   styleUrl: './gig-summary.css',
 })
 export class GigSummary implements OnInit, OnDestroy {
+  @ViewChild('addGigDialog') addGigDialogTemplate!: TemplateRef<any>;
+  
   isLoading = signal(true);
   gigs = signal<Gig[]>([]);
+  isSubmitting = signal(false);
+  
+  gigForm!: FormGroup;
+  dialogRef?: MatDialogRef<any>;
 
+  private fb = inject(FormBuilder);
   private appBar = inject(AppBarService);
   private router = inject(Router);
   private gigServices = inject(GigServices);
-  private platformId = inject(PLATFORM_ID); 
+  private platformId = inject(PLATFORM_ID);
+  private dialog = inject(MatDialog);
 
-  // Job types map
-  private jobTypesMap: Map<number, string> = new Map();
-
-  // Mock job types
-  private mockJobTypes: JobType[] = [
+  jobTypes: JobType[] = [
     { id: 1, name: 'Plumbing' },
     { id: 2, name: 'Electrical' },
     { id: 3, name: 'Carpentry' },
@@ -59,8 +69,14 @@ export class GigSummary implements OnInit, OnDestroy {
     { id: 5, name: 'Masonry' }
   ];
 
+  counties = ['Nairobi', 'Kiambu', 'Mombasa', 'Kisumu', 'Nakuru'];
+  constituencies = ['Westlands', 'Dagoretti North', 'Starehe', 'Langata', 'Kasarani'];
+
+  // Job types map
+  private jobTypesMap: Map<number, string> = new Map();
+
   // Mock gigs
-  private mockGigs: Gig[] = [
+  mockGigs: Gig[] = [
     {
       id: 1,
       job_type: 1,
@@ -131,7 +147,7 @@ export class GigSummary implements OnInit, OnDestroy {
         icon: 'add',
         ariaLabel: 'Add Gigs',
         onClick: () => {
-          console.log('Navigate to Add Gig');
+          this.openAddGigDialog();
         },
       },
       {
@@ -144,23 +160,39 @@ export class GigSummary implements OnInit, OnDestroy {
       }
     ]);
 
+    // Initialize form
+    this.initGigForm();
+
     if (isPlatformBrowser(this.platformId)) {
-    this.fetchGigs();
-    this.getOrganizations();
-    this.getGigsAvailable();
-    this.getGigType();
-
+      this.fetchGigs();
+      this.getOrganizations();
+      this.getGigsAvailable();
+      this.getGigType();
+    }
   }
+
+  initGigForm(): void {
+    this.gigForm = this.fb.group({
+      job_type: ['', Validators.required],
+      start_date: ['', Validators.required],
+      duration_value: [null, [Validators.required, Validators.min(1)]],
+      duration_unit: ['', Validators.required],
+      client_name: ['', Validators.required],
+      client_phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      county: ['', Validators.required],
+      constituency: ['', Validators.required],
+      ward: ['', Validators.required],
+      organization: [15],
+    });
   }
 
-  getOrganizations():void {
+  getOrganizations(): void {
     this.gigServices.getOrganizations().subscribe({
       next: (data) => {
         console.log('Organizations:', data);
       },
       error: (error) => {
         console.error('Error fetching organizations:', error);
-
         if (error.status === 401) {
           this.router.navigate(['/login']);
         }
@@ -168,14 +200,13 @@ export class GigSummary implements OnInit, OnDestroy {
     });
   }
 
-  getGigsAvailable():void {
+  getGigsAvailable(): void {
     this.gigServices.getGigsAvailable().subscribe({
       next: (data) => {
         console.log('Gigs Available:', data);
       },
       error: (error) => {
         console.error('Error fetching gigs available:', error);
-
         if (error.status === 401) {
           this.router.navigate(['/login']);
         }
@@ -184,14 +215,12 @@ export class GigSummary implements OnInit, OnDestroy {
   }
 
   getGigType(): void {
-    // Implementation for getting gig type
     this.gigServices.getGigTypes().subscribe({
       next: (data) => {
         console.log('Gig Types:', data);
       },
       error: (error) => {
         console.error('Error fetching gig types:', error);
-
         if (error.status === 401) {
           this.router.navigate(['/login']);
         }
@@ -201,13 +230,16 @@ export class GigSummary implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.appBar.clearActions();
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
   }
 
   fetchGigs(): void {
     this.isLoading.set(true);
 
     // Load job types
-    this.mockJobTypes.forEach(jt => {
+    this.jobTypes.forEach(jt => {
       this.jobTypesMap.set(jt.id, jt.name);
     });
 
@@ -222,7 +254,98 @@ export class GigSummary implements OnInit, OnDestroy {
     return this.jobTypesMap.get(jobTypeId) || 'Unknown Job';
   }
 
-  addFirstGig(): void {
-    this.router.navigate(['/main-menu/log-gig']);
+  openAddGigDialog(): void {
+    this.gigForm.reset({ organization: 15 });
+    this.dialogRef = this.dialog.open(this.addGigDialogTemplate, {
+      width: '600px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      panelClass: 'gig-dialog',
+      disableClose: false
+    });
+
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.isSubmitting.set(false);
+    });
+  }
+
+  closeDialog(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+  }
+
+  onSubmit(): void {
+    if (this.gigForm.invalid) {
+      this.gigForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    const payload = this.gigForm.value;
+
+    console.log('SUBMIT PAYLOAD', payload);
+
+    // Simulate API call
+    setTimeout(() => {
+      const newGig: Gig = {
+        id: this.mockGigs.length + 1,
+        job_type: parseInt(payload.job_type),
+        client_name: payload.client_name,
+        client_phone: payload.client_phone,
+        county: payload.county,
+        constituency: payload.constituency,
+        ward: payload.ward,
+        start_date: payload.start_date,
+        duration_value: payload.duration_value,
+        duration_unit: payload.duration_unit,
+        is_verified: false
+      };
+
+      this.mockGigs.unshift(newGig);
+      this.gigs.set([...this.mockGigs]);
+
+      this.isSubmitting.set(false);
+      this.closeDialog();
+
+      console.log('Gig added successfully!');
+    }, 1500);
+
+    /*
+      REAL API IMPLEMENTATION:
+      
+      this.gigServices.createGig(payload).subscribe({
+        next: (response) => {
+          this.isSubmitting.set(false);
+          this.closeDialog();
+          this.fetchGigs(); // Reload gigs
+        },
+        error: (error) => {
+          console.error('Error creating gig:', error);
+          this.isSubmitting.set(false);
+        }
+      });
+    */
+  }
+
+  hasError(fieldName: string): boolean {
+    const field = this.gigForm.get(fieldName);
+    return !!(field && field.invalid && field.touched);
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const field = this.gigForm.get(fieldName);
+    if (!field) return '';
+
+    if (field.hasError('required')) {
+      return 'This field is required';
+    }
+    if (field.hasError('min')) {
+      return 'Value must be greater than 0';
+    }
+    if (field.hasError('pattern')) {
+      return 'Please enter a valid 10-digit phone number';
+    }
+    return '';
   }
 }

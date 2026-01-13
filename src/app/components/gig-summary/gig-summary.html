@@ -1,6 +1,32 @@
-<br><br>
+
 <div class="page">
   
+  <!-- Desktop Action Bar -->
+  <div class="desktop-actions">
+    <div class="actions-left">
+      <h1 class="page-title">
+        <i class="material-icons">work_outline</i>
+        My Gigs
+      </h1>
+      @if(!isLoading()) {
+      <span class="gig-count" >
+        {{ gigs().length }} {{ gigs().length === 1 ? 'Gig' : 'Gigs' }}
+      </span>
+      }
+ 
+    </div>
+    <div class="actions-right">
+      <button class="action-btn secondary-btn" (click)="fetchGigs()" [disabled]="isLoading()">
+        <i class="material-icons">refresh</i>
+        <span>Reload</span>
+      </button>
+      <button class="action-btn primary-btn" (click)="openAddGigDialog()">
+        <i class="material-icons">add</i>
+        <span>Add Gig</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Loading State -->
   @if (isLoading()) {
     <div class="loading-container">
@@ -17,17 +43,17 @@
       </div>
       <h3>No Gigs Found</h3>
       <p>You haven't logged any gigs yet.<br>Start by adding your first gig!</p>
-      <button class="add-first-btn" (click)="addFirstGig()">
+      <button class="add-first-btn" (click)="openAddGigDialog()">
         <i class="material-icons">add</i>
         <span>Add Your First Gig</span>
       </button>
     </div>
   }
 
-  <!-- Gigs List -->
+  <!-- Gigs Grid -->
   @else {
-    <div class="gigs-list">
-      @for (gig of gigs(); track gig.id; let i = $index) {
+    <div class="gigs-grid">
+      @for (gig of gigs(); track gig.id) {
         <div class="gig-card" [class.verified]="gig.is_verified">
           
           <!-- Header with Status -->
@@ -43,13 +69,17 @@
           <div class="info-box client-info">
             <div class="info-row">
               <i class="material-icons">person</i>
-              <span class="label">Client:</span>
-              <span class="value">{{ gig.client_name || 'Not specified' }}</span>
+              <div class="info-content">
+                <span class="label">Client</span>
+                <span class="value">{{ gig.client_name || 'Not specified' }}</span>
+              </div>
             </div>
             <div class="info-row">
               <i class="material-icons">phone</i>
-              <span class="label">Phone:</span>
-              <span class="value">{{ gig.client_phone || 'Not provided' }}</span>
+              <div class="info-content">
+                <span class="label">Phone</span>
+                <span class="value">{{ gig.client_phone || 'Not provided' }}</span>
+              </div>
             </div>
           </div>
 
@@ -57,18 +87,24 @@
           <div class="info-box location-info">
             <div class="info-row">
               <i class="material-icons">location_city</i>
-              <span class="label">County:</span>
-              <span class="value">{{ gig.county || 'Not specified' }}</span>
+              <div class="info-content">
+                <span class="label">County</span>
+                <span class="value">{{ gig.county || 'Not specified' }}</span>
+              </div>
             </div>
             <div class="info-row">
               <i class="material-icons">account_balance</i>
-              <span class="label">Constituency:</span>
-              <span class="value">{{ gig.constituency || 'Not specified' }}</span>
+              <div class="info-content">
+                <span class="label">Constituency</span>
+                <span class="value">{{ gig.constituency || 'Not specified' }}</span>
+              </div>
             </div>
             <div class="info-row">
               <i class="material-icons">place</i>
-              <span class="label">Ward:</span>
-              <span class="value">{{ gig.ward || 'Not specified' }}</span>
+              <div class="info-content">
+                <span class="label">Ward</span>
+                <span class="value">{{ gig.ward || 'Not specified' }}</span>
+              </div>
             </div>
           </div>
 
@@ -76,13 +112,17 @@
           <div class="info-box job-details" [class.verified-bg]="gig.is_verified">
             <div class="info-row">
               <i class="material-icons">calendar_today</i>
-              <span class="label">Start Date:</span>
-              <span class="value">{{ gig.start_date || 'Not set' }}</span>
+              <div class="info-content">
+                <span class="label">Start Date</span>
+                <span class="value">{{ gig.start_date || 'Not set' }}</span>
+              </div>
             </div>
             <div class="info-row">
               <i class="material-icons">schedule</i>
-              <span class="label">Duration:</span>
-              <span class="value">{{ gig.duration_value || '?' }} {{ gig.duration_unit || '' }}</span>
+              <div class="info-content">
+                <span class="label">Duration</span>
+                <span class="value">{{ gig.duration_value || '?' }} {{ gig.duration_unit || '' }}</span>
+              </div>
             </div>
           </div>
 
@@ -92,3 +132,219 @@
   }
 
 </div>
+
+<!-- ============================================ -->
+<!-- ADD GIG DIALOG TEMPLATE -->
+<!-- ============================================ -->
+<ng-template #addGigDialog>
+  <div class="dialog-container">
+    <div class="dialog-header" mat-dialog-title>
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="material-icons">work_outline</i>
+        </div>
+        <div class="header-text">
+          <h2>Log New Gig</h2>
+          <p>Provide accurate details to build your work history</p>
+        </div>
+      </div>
+      <button type="button" class="close-btn" mat-dialog-close aria-label="Close dialog">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+
+    <form class="dialog-body" mat-dialog-content [formGroup]="gigForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Client Info -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="material-icons">person</i>
+          Client Information
+        </h3>
+        
+        <div class="form-group">
+          <label>Client Name *</label>
+          <input
+            type="text"
+            class="form-control"
+            [class.error]="hasError('client_name')"
+            formControlName="client_name"
+            placeholder="Enter client name"
+          />
+          @if (hasError('client_name')) {
+            <span class="error-message">{{ getErrorMessage('client_name') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Client Phone *</label>
+          <input
+            type="tel"
+            class="form-control"
+            [class.error]="hasError('client_phone')"
+            formControlName="client_phone"
+            placeholder="0712345678"
+          />
+          @if (hasError('client_phone')) {
+            <span class="error-message">{{ getErrorMessage('client_phone') }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Job Details -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="material-icons">work</i>
+          Job Details
+        </h3>
+        
+        <div class="form-group">
+          <label>Job Type *</label>
+          <select 
+            class="form-control" 
+            [class.error]="hasError('job_type')"
+            formControlName="job_type"
+          >
+            <option value="">Select job type</option>
+            <option *ngFor="let jt of jobTypes" [value]="jt.id">
+              {{ jt.name }}
+            </option>
+          </select>
+          @if (hasError('job_type')) {
+            <span class="error-message">{{ getErrorMessage('job_type') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Start Date *</label>
+          <input
+            type="date"
+            class="form-control"
+            [class.error]="hasError('start_date')"
+            formControlName="start_date"
+          />
+          @if (hasError('start_date')) {
+            <span class="error-message">{{ getErrorMessage('start_date') }}</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Duration Unit *</label>
+            <select 
+              class="form-control" 
+              [class.error]="hasError('duration_unit')"
+              formControlName="duration_unit"
+            >
+              <option value="">Select unit</option>
+              <option value="days">Days</option>
+              <option value="weeks">Weeks</option>
+              <option value="months">Months</option>
+            </select>
+            @if (hasError('duration_unit')) {
+              <span class="error-message">{{ getErrorMessage('duration_unit') }}</span>
+            }
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Value *</label>
+            <input
+              type="number"
+              class="form-control"
+              [class.error]="hasError('duration_value')"
+              formControlName="duration_value"
+              placeholder="0"
+              min="1"
+            />
+            @if (hasError('duration_value')) {
+              <span class="error-message">{{ getErrorMessage('duration_value') }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="material-icons">location_on</i>
+          Location
+        </h3>
+        
+        <div class="form-group">
+          <label>County *</label>
+          <select 
+            class="form-control" 
+            [class.error]="hasError('county')"
+            formControlName="county"
+          >
+            <option value="">Select county</option>
+            <option *ngFor="let c of counties" [value]="c">
+              {{ c }}
+            </option>
+          </select>
+          @if (hasError('county')) {
+            <span class="error-message">{{ getErrorMessage('county') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Constituency *</label>
+          <select 
+            class="form-control" 
+            [class.error]="hasError('constituency')"
+            formControlName="constituency"
+          >
+            <option value="">Select constituency</option>
+            <option *ngFor="let con of constituencies" [value]="con">
+              {{ con }}
+            </option>
+          </select>
+          @if (hasError('constituency')) {
+            <span class="error-message">{{ getErrorMessage('constituency') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Ward *</label>
+          <input
+            type="text"
+            class="form-control"
+            [class.error]="hasError('ward')"
+            formControlName="ward"
+            placeholder="Enter ward name"
+          />
+          @if (hasError('ward')) {
+            <span class="error-message">{{ getErrorMessage('ward') }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="dialog-footer" mat-dialog-actions>
+        <button
+          type="button"
+          class="cancel-btn"
+          mat-dialog-close
+          [disabled]="isSubmitting()"
+        >
+          <i class="material-icons">close</i>
+          <span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="gigForm.invalid || isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <div class="spinner-small"></div>
+            <span>Submitting...</span>
+          } @else {
+            <i class="material-icons">send</i>
+            <span>Submit Gig</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
