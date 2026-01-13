@@ -1,7 +1,7 @@
 // gig-summary.component.ts
 
-import { afterNextRender, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { afterNextRender, Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
@@ -45,6 +45,7 @@ export class GigSummary implements OnInit, OnDestroy {
   private appBar = inject(AppBarService);
   private router = inject(Router);
   private gigServices = inject(GigServices);
+  private platformId = inject(PLATFORM_ID); 
 
   // Job types map
   private jobTypesMap: Map<number, string> = new Map();
@@ -143,14 +144,53 @@ export class GigSummary implements OnInit, OnDestroy {
       }
     ]);
 
+    if (isPlatformBrowser(this.platformId)) {
     this.fetchGigs();
+    this.getOrganizations();
+    this.getGigsAvailable();
+    this.getGigType();
 
+  }
+  }
+
+  getOrganizations():void {
     this.gigServices.getOrganizations().subscribe({
       next: (data) => {
         console.log('Organizations:', data);
       },
       error: (error) => {
         console.error('Error fetching organizations:', error);
+
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
+  }
+
+  getGigsAvailable():void {
+    this.gigServices.getGigsAvailable().subscribe({
+      next: (data) => {
+        console.log('Gigs Available:', data);
+      },
+      error: (error) => {
+        console.error('Error fetching gigs available:', error);
+
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
+  }
+
+  getGigType(): void {
+    // Implementation for getting gig type
+    this.gigServices.getGigTypes().subscribe({
+      next: (data) => {
+        console.log('Gig Types:', data);
+      },
+      error: (error) => {
+        console.error('Error fetching gig types:', error);
 
         if (error.status === 401) {
           this.router.navigate(['/login']);

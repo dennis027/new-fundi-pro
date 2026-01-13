@@ -43,6 +43,10 @@ export class GigServices {
   getOrganizations(): Observable<any> {
     return this.http.get<any>(this.apiUrl + 'organizations/'); 
   } 
+
+  getGigTypes(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'job-types/'); 
+  }
 }
 
  
