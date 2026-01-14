@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { AppBarService } from '../../services/app-bar-service';
 import { GigServices } from '../../services/gig-services';
 import { SharedImports } from '../../shared-imports/imports';
+import regionsData from '../../../assets/JSON-Files/regions.json';
+
 
 interface JobType {
   id: number;
@@ -53,6 +55,7 @@ export class GigSummary implements OnInit, OnDestroy {
   
   gigForm!: FormGroup;
   dialogRef?: MatDialogRef<any>;
+  regions = regionsData;
 
   private fb = inject(FormBuilder);
   private appBar = inject(AppBarService);
@@ -174,7 +177,16 @@ export class GigSummary implements OnInit, OnDestroy {
       this.getUserRelatedGigs();
       this.fetchGigs();
     }
+
+    this.fetchRegions();
+
   }
+
+
+ fetchRegions() {
+    console.log(this.regions); // ✅ actual JSON array/object
+  }
+
 
   initGigForm(): void {
     this.gigForm = this.fb.group({
