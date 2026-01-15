@@ -67,6 +67,12 @@ export class GigSummary implements OnInit, OnDestroy {
   userRelatedGigs: Gig[] = [];
   organizations: any[] = [];
 
+  gigTypes: any[] = [];
+
+  counties: string[] = [];
+  constituencies: string[] = [];
+  wards: string[] = [];
+
 
   jobTypes: JobType[] = [
     { id: 1, name: 'Plumbing' },
@@ -76,8 +82,7 @@ export class GigSummary implements OnInit, OnDestroy {
     { id: 5, name: 'Masonry' }
   ];
 
-  counties = ['Nairobi', 'Kiambu', 'Mombasa', 'Kisumu', 'Nakuru'];
-  constituencies = ['Westlands', 'Dagoretti North', 'Starehe', 'Langata', 'Kasarani'];
+  
 
   // Job types map
   private jobTypesMap: Map<number, string> = new Map();
@@ -179,30 +184,98 @@ export class GigSummary implements OnInit, OnDestroy {
     }
 
     this.fetchRegions();
+    this.setupLocationListeners();
 
   }
 
 
  fetchRegions() {
-    console.log(this.regions); // ✅ actual JSON array/object
   }
 
+setupLocationListeners(): void {
+  // Load counties from JSON - use county_name instead of county
+  this.counties = this.regions.map((r: any) => r.county_name);
 
-  initGigForm(): void {
-    this.gigForm = this.fb.group({
-      job_type: [''],
-      start_date: ['', Validators.required],
-      duration_value: [null, [Validators.required, Validators.min(1)]],
-      duration_unit: ['', Validators.required],
-      client_name: ['', Validators.required],
-      client_phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      county: ['', Validators.required],
-      constituency: ['', Validators.required],
-      ward: ['', Validators.required],
-      organization: [15],
+  // Disable child controls initially
+  this.gigForm.get('constituency')?.disable();
+  this.gigForm.get('ward')?.disable();
+
+  // COUNTY → CONSTITUENCY
+  this.gigForm.get('county')?.valueChanges.subscribe((county: string) => {
+    this.constituencies = [];
+    this.wards = [];
+
+    this.gigForm.patchValue({
+      constituency: '',
+      ward: ''
     });
-  }
 
+    if (!county) {
+      this.gigForm.get('constituency')?.disable();
+      this.gigForm.get('ward')?.disable();
+      return;
+    }
+
+    // Find county data using county_name
+    const countyData = this.regions.find(
+      (r: any) => r.county_name === county
+    );
+
+    // Map constituencies using constituency_name
+    this.constituencies = countyData
+      ? countyData.constituencies.map((c: any) => c.constituency_name)
+      : [];
+
+    if (this.constituencies.length > 0) {
+      this.gigForm.get('constituency')?.enable();
+    }
+    this.gigForm.get('ward')?.disable();
+  });
+
+  // CONSTITUENCY → WARD
+  this.gigForm.get('constituency')?.valueChanges.subscribe((constituency: string) => {
+    this.wards = [];
+    this.gigForm.patchValue({ ward: '' });
+
+    if (!constituency) {
+      this.gigForm.get('ward')?.disable();
+      return;
+    }
+
+    // Find county data using county_name
+    const countyData = this.regions.find(
+      (r: any) => r.county_name === this.gigForm.get('county')?.value
+    );
+
+    // Find constituency data using constituency_name
+    const constituencyData = countyData?.constituencies.find(
+      (c: any) => c.constituency_name === constituency
+    );
+
+    // Wards is already an array of strings in your JSON
+    this.wards = constituencyData ? constituencyData.wards : [];
+
+    if (this.wards.length > 0) {
+      this.gigForm.get('ward')?.enable();
+    }
+  });
+}
+
+// Also update initGigForm to not add validators to disabled fields initially
+initGigForm(): void {
+  this.gigForm = this.fb.group({
+    job_type: ['', Validators.required],
+    start_date: ['', Validators.required],
+    duration_value: [null, [Validators.required, Validators.min(1)]],
+    duration_unit: ['', Validators.required],
+    // client_name: ['', Validators.required],
+    client_phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+    county: ['', Validators.required],
+    constituency: [{ value: '', disabled: true }, Validators.required],
+    ward: [{ value: '', disabled: true }, Validators.required],
+    organization:['', Validators.required],
+  });
+}
   getOrganizations(): void {
     this.gigServices.getOrganizations().subscribe({
       next: (data) => {
@@ -236,6 +309,7 @@ export class GigSummary implements OnInit, OnDestroy {
     this.gigServices.getGigTypes().subscribe({
       next: (data) => {
         console.log('Gig Types:', data);
+        this.gigTypes = data;
       },
       error: (error) => {
         console.error('Error fetching gig types:', error);

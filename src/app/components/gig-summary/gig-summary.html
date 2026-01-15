@@ -168,16 +168,16 @@
           
         <select 
             class="form-control" 
-            [class.error]="hasError('client_name')"
-            formControlName="client_name"
+            [class.error]="hasError('organization')"
+            formControlName="organization" 
           >
             <option value="">Select Client</option>
             <option *ngFor="let c of organizations" [value]="c.id">
               {{ c.name }}
             </option>
           </select>
-          @if (hasError('client_name')) {
-            <span class="error-message">{{ getErrorMessage('client_name') }}</span>
+          @if (hasError('organization')) {
+            <span class="error-message">{{ getErrorMessage('organization') }}</span>
           }
         </div>
 
@@ -211,7 +211,7 @@
             formControlName="job_type"
           >
             <option value="">Select job type</option>
-            <option *ngFor="let jt of jobTypes" [value]="jt.id">
+            <option *ngFor="let jt of gigTypes" [value]="jt.id">
               {{ jt.name }}
             </option>
           </select>
@@ -277,8 +277,8 @@
         
         <div class="form-group">
           <label>County *</label>
-          <select 
-            class="form-control" 
+          <select
+            class="form-control"
             [class.error]="hasError('county')"
             formControlName="county"
           >
@@ -287,15 +287,17 @@
               {{ c }}
             </option>
           </select>
+
           @if (hasError('county')) {
             <span class="error-message">{{ getErrorMessage('county') }}</span>
           }
         </div>
 
+
         <div class="form-group">
           <label>Constituency *</label>
-          <select 
-            class="form-control" 
+          <select
+            class="form-control"
             [class.error]="hasError('constituency')"
             formControlName="constituency"
           >
@@ -304,6 +306,7 @@
               {{ con }}
             </option>
           </select>
+
           @if (hasError('constituency')) {
             <span class="error-message">{{ getErrorMessage('constituency') }}</span>
           }
@@ -311,17 +314,22 @@
 
         <div class="form-group">
           <label>Ward *</label>
-          <input
-            type="text"
+          <select
             class="form-control"
             [class.error]="hasError('ward')"
             formControlName="ward"
-            placeholder="Enter ward name"
-          />
+          >
+            <option value="">Select ward</option>
+            <option *ngFor="let w of wards" [value]="w">
+              {{ w }}
+            </option>
+          </select>
+
           @if (hasError('ward')) {
             <span class="error-message">{{ getErrorMessage('ward') }}</span>
           }
         </div>
+
       </div>
 
       <!-- Submit Buttons -->
