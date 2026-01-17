@@ -87,61 +87,7 @@ export class GigSummary implements OnInit, OnDestroy {
   // Job types map
   private jobTypesMap: Map<number, string> = new Map();
 
-  // Mock gigs
-  mockGigs: Gig[] = [
-    {
-      id: 1,
-      job_type: 1,
-      client_name: 'Nairobi Hospital',
-      client_phone: '0712345678',
-      county: 'Nairobi',
-      constituency: 'Westlands',
-      ward: 'Parklands',
-      start_date: '2025-01-01',
-      duration_value: 5,
-      duration_unit: 'days',
-      is_verified: true
-    },
-    {
-      id: 2,
-      job_type: 2,
-      client_name: 'KNH',
-      client_phone: '0723456789',
-      county: 'Nairobi',
-      constituency: 'Dagoretti North',
-      ward: 'Kilimani',
-      start_date: '2024-12-26',
-      duration_value: 2,
-      duration_unit: 'weeks',
-      is_verified: false
-    },
-    {
-      id: 3,
-      job_type: 3,
-      client_name: 'Aga Khan Hospital',
-      client_phone: '0734567890',
-      county: 'Nairobi',
-      constituency: 'Westlands',
-      ward: 'Parklands',
-      start_date: '2024-12-15',
-      duration_value: 7,
-      duration_unit: 'days',
-      is_verified: true
-    },
-    {
-      id: 4,
-      job_type: 4,
-      client_name: 'MP Shah Hospital',
-      client_phone: '0745678901',
-      county: 'Nairobi',
-      constituency: 'Starehe',
-      ward: 'Nairobi Central',
-      start_date: '2024-12-10',
-      duration_value: 3,
-      duration_unit: 'days',
-      is_verified: false
-    }
-  ];
+
 
   constructor() {
     afterNextRender(() => {
@@ -396,7 +342,7 @@ initGigForm(): void {
     // Simulate API call
     setTimeout(() => {
       const newGig: Gig = {
-        id: this.mockGigs.length + 1,
+        id: Math.floor(Math.random() * 10000),
         job_type: parseInt(payload.job_type),
         client_name: payload.client_name,
         client_phone: payload.client_phone,
@@ -409,8 +355,7 @@ initGigForm(): void {
         is_verified: false
       };
 
-      this.mockGigs.unshift(newGig);
-      this.gigs.set([...this.mockGigs]);
+    
 
       this.isSubmitting.set(false);
       this.closeDialog();
@@ -425,7 +370,7 @@ initGigForm(): void {
         next: (response) => {
           this.isSubmitting.set(false);
           this.closeDialog();
-          this.fetchGigs(); // Reload gigs
+          this.getUserRelatedGigs()
         },
         error: (error) => {
           console.error('Error creating gig:', error);
