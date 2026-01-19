@@ -74,18 +74,19 @@ export class GigSummary implements OnInit, OnDestroy {
   wards: string[] = [];
 
 
-  jobTypes: JobType[] = [
-    { id: 1, name: 'Plumbing' },
-    { id: 2, name: 'Electrical' },
-    { id: 3, name: 'Carpentry' },
-    { id: 4, name: 'Painting' },
-    { id: 5, name: 'Masonry' }
-  ];
+  // jobTypes: JobType[] = [
+  //   { id: 1, name: 'Plumbing' },
+  //   { id: 2, name: 'Electrical' },
+  //   { id: 3, name: 'Carpentry' },
+  //   { id: 4, name: 'Painting' },
+  //   { id: 5, name: 'Masonry' }
+  // ];
 
   
 
   // Job types map
   private jobTypesMap: Map<number, string> = new Map();
+  private gigTypesMap: Map<number, string> = new Map();
 
 
 
@@ -256,6 +257,9 @@ initGigForm(): void {
       next: (data) => {
         console.log('Gig Types:', data);
         this.gigTypes = data;
+            this.gigTypes.forEach(jt => {
+           this.gigTypesMap.set(jt.id, jt.name);
+          });
       },
       error: (error) => {
         console.error('Error fetching gig types:', error);
@@ -292,7 +296,7 @@ initGigForm(): void {
     this.isLoading.set(true);
 
     // Load job types
-    this.jobTypes.forEach(jt => {
+    this.gigTypes.forEach(jt => {
       this.jobTypesMap.set(jt.id, jt.name);
     });
 
@@ -304,7 +308,7 @@ initGigForm(): void {
   }
 
   getJobTypeName(jobTypeId: number): string {
-    return this.jobTypesMap.get(jobTypeId) || 'Unknown Job';
+    return this.gigTypesMap.get(jobTypeId) || 'Unknown Job';
   }
 
   openAddGigDialog(): void {
@@ -366,17 +370,16 @@ initGigForm(): void {
     
       // REAL API IMPLEMENTATION:
       
-      this.gigServices.addGig(payload).subscribe({
-        next: (response) => {
-          this.isSubmitting.set(false);
-          this.closeDialog();
-          this.getUserRelatedGigs()
-        },
-        error: (error) => {
-          console.error('Error creating gig:', error);
-          this.isSubmitting.set(false);
-        }
-      });
+    this.gigServices.addGig(payload).subscribe({
+      next: (newGig) => {
+        this.gigs.update(g => [...g, newGig]);
+        this.isSubmitting.set(false);
+        this.closeDialog();
+      },
+      error: () => {
+        this.isSubmitting.set(false);
+      }
+    });
     
   }
 
