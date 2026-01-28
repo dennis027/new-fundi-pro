@@ -47,6 +47,8 @@ export class GigServices {
   getGigTypes(): Observable<any> {
     return this.http.get<any>(this.apiUrl + 'job-types/'); 
   }
+
+  
 }
 
  
