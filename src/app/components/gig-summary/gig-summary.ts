@@ -72,15 +72,12 @@ export class GigSummary implements OnInit, OnDestroy {
   counties: string[] = [];
   constituencies: string[] = [];
   wards: string[] = [];
+  selectedPhoneNumber: string = '';
 
 
-  // jobTypes: JobType[] = [
-  //   { id: 1, name: 'Plumbing' },
-  //   { id: 2, name: 'Electrical' },
-  //   { id: 3, name: 'Carpentry' },
-  //   { id: 4, name: 'Painting' },
-  //   { id: 5, name: 'Masonry' }
-  // ];
+  selectedCounty: string = '';
+  selectedConstituency: string = '';
+  selectedWard: string = '';
 
   
 
@@ -138,6 +135,8 @@ export class GigSummary implements OnInit, OnDestroy {
 
  fetchRegions() {
   }
+
+
 
 setupLocationListeners(): void {
   // Load counties from JSON - use county_name instead of county
@@ -215,11 +214,6 @@ initGigForm(): void {
     start_date: ['', Validators.required],
     duration_value: [null, [Validators.required, Validators.min(1)]],
     duration_unit: ['', Validators.required],
-    // client_name: ['', Validators.required],
-    client_phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-    county: ['', Validators.required],
-    constituency: [{ value: '', disabled: true }, Validators.required],
-    ward: [{ value: '', disabled: true }, Validators.required],
     organization:['', Validators.required],
   });
 }
@@ -345,14 +339,9 @@ initGigForm(): void {
 
     // Simulate API call
     setTimeout(() => {
-      const newGig: Gig = {
+      const newGig: any = {
         id: Math.floor(Math.random() * 10000),
         job_type: parseInt(payload.job_type),
-        client_name: payload.client_name,
-        client_phone: payload.client_phone,
-        county: payload.county,
-        constituency: payload.constituency,
-        ward: payload.ward,
         start_date: payload.start_date,
         duration_value: payload.duration_value,
         duration_unit: payload.duration_unit,
@@ -403,4 +392,21 @@ initGigForm(): void {
     }
     return '';
   }
+
+
+getOrgDetails(event: Event) {
+  const orgId = (event.target as HTMLSelectElement).value;
+  console.log(orgId);
+  const selectedOrg = this.organizations.find(org => org.id == orgId);
+  this.selectedCounty = selectedOrg ? selectedOrg.county : '';
+  this.selectedConstituency = selectedOrg ? selectedOrg.constituency : '';
+  this.selectedWard = selectedOrg ? selectedOrg.ward : '';
+  this.selectedPhoneNumber = selectedOrg ? selectedOrg.phone_number : '';
+
+  
+
+}
+
+
+
 }

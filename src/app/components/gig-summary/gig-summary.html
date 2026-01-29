@@ -170,9 +170,10 @@
             class="form-control" 
             [class.error]="hasError('organization')"
             formControlName="organization" 
+            (change)="getOrgDetails($event)"
           >
-            <option value="">Select Client</option>
-            <option *ngFor="let c of organizations" [value]="c.id">
+            <option  value="">Select Client</option>
+            <option  *ngFor="let c of organizations" [value]="c.id">
               {{ c.name }}
             </option>
           </select>
@@ -181,19 +182,27 @@
           }
         </div>
 
-        <div class="form-group">
-          <label>Client Phone *</label>
-          <input
-            type="tel"
-            class="form-control"
-            [class.error]="hasError('client_phone')"
-            formControlName="client_phone"
-            placeholder="0712345678"
-          />
-          @if (hasError('client_phone')) {
-            <span class="error-message">{{ getErrorMessage('client_phone') }}</span>
-          }
+        <div  class="customer-details">
+          <ul>
+          @if(selectedPhoneNumber){
+              <strong>Phone Number:</strong>
+              <li>{{selectedPhoneNumber}}</li>
+            }
+           @if(selectedCounty ){
+              <strong>County:</strong>
+              <li>{{selectedCounty}}</li>
+           }
+          @if(selectedConstituency ){
+              <strong>Constituency:</strong>
+              <li>{{selectedConstituency}}</li>
+           }
+          @if(selectedWard){
+              <strong>Ward:</strong>
+             <li>{{selectedWard}}</li>
+           }
+          </ul>
         </div>
+
       </div>
 
       <!-- Job Details -->
@@ -268,69 +277,6 @@
         </div>
       </div>
 
-      <!-- Location -->
-      <div class="form-section">
-        <h3 class="section-title">
-          <i class="material-icons">location_on</i>
-          Location
-        </h3>
-        
-        <div class="form-group">
-          <label>County *</label>
-          <select
-            class="form-control"
-            [class.error]="hasError('county')"
-            formControlName="county"
-          >
-            <option value="">Select county</option>
-            <option *ngFor="let c of counties" [value]="c">
-              {{ c }}
-            </option>
-          </select>
-
-          @if (hasError('county')) {
-            <span class="error-message">{{ getErrorMessage('county') }}</span>
-          }
-        </div>
-
-
-        <div class="form-group">
-          <label>Constituency *</label>
-          <select
-            class="form-control"
-            [class.error]="hasError('constituency')"
-            formControlName="constituency"
-          >
-            <option value="">Select constituency</option>
-            <option *ngFor="let con of constituencies" [value]="con">
-              {{ con }}
-            </option>
-          </select>
-
-          @if (hasError('constituency')) {
-            <span class="error-message">{{ getErrorMessage('constituency') }}</span>
-          }
-        </div>
-
-        <div class="form-group">
-          <label>Ward *</label>
-          <select
-            class="form-control"
-            [class.error]="hasError('ward')"
-            formControlName="ward"
-          >
-            <option value="">Select ward</option>
-            <option *ngFor="let w of wards" [value]="w">
-              {{ w }}
-            </option>
-          </select>
-
-          @if (hasError('ward')) {
-            <span class="error-message">{{ getErrorMessage('ward') }}</span>
-          }
-        </div>
-
-      </div>
 
       <!-- Submit Buttons -->
       <div class="dialog-footer" mat-dialog-actions>
