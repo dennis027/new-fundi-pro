@@ -1,7 +1,7 @@
 // fundi-dash.component.ts
 
-import { Component, signal, afterNextRender, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, afterNextRender, inject, OnInit, OnDestroy, ViewChild, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AppBarService } from '../../services/app-bar-service';
+import { UserService } from '../../services/user-service';
+import { environment } from '../../../environments/environment';
 
 interface WorkLog {
   id: number;
@@ -47,13 +49,14 @@ export class FundiDash implements OnInit, OnDestroy {
   isMobile = signal(false);
   private appBar = inject(AppBarService);
   private router = inject(Router);
-
+  private userService = inject(UserService);
+  private platformId = inject(PLATFORM_ID);
   // User data
-  username: string = 'John Doe';
-  email: string = 'john.doe@example.com';
-  fullname: string = 'John Doe';
-  imgFile: string = '';
-  location: string = 'Nairobi, Kenya';
+  username = signal<string>('');
+  email = signal<string>('');
+  fullname = signal<string>('');
+  imgFile = signal<any>('');
+  location= signal<any>('');
   
   // Trust-focused metrics
   totalGigs: number = 8;
@@ -135,7 +138,31 @@ export class FundiDash implements OnInit, OnDestroy {
     ]);
 
     this.generateLast30Days();
+    if (isPlatformBrowser(this.platformId)) {
+    this.getLoggedInUser();
+    }
   }
+
+  getLoggedInUser(): void { 
+    this.userService.getUserDetails().subscribe({
+      next: (data) => {
+        // Update signals instead of raw properties
+        this.username.set(data.username || '');
+        this.fullname.set(data.full_name || '');
+        this.email.set(data.email || '');
+        this.location.set(data.county+' ' +data.constituency +' ' + data.ward || '');
+        this.imgFile.set(`${environment.apiUrl}${data.profile_image ?? ''}`);
+        console.log('User data fetched:', data);
+      },
+      error: (err) => {
+        console.error('Error fetching user profile', err);
+        if (err.status === 401) {
+          this.router.navigate(['/login']);
+        }
+      }
+    }); 
+  }
+
 
   // Generate 30-day activity calendar
   private generateLast30Days(): void {
