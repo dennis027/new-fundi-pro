@@ -17,7 +17,6 @@ export class Main {
 
   links = [
     { name: 'Dashboard', route: '/main-menu/', icon: 'fas fa-chart-pie' },
-    { name: 'Gigs', route: '/main-menu/gigs', icon: 'fas fa-briefcase' },
     { name: 'Profile', route: '/main-menu/profile', icon: 'fas fa-user' },
      { name: 'MPesa', route: '/main-menu/mpesa', icon: 'fas fa-chart-pie' },
     { name: 'Search Gigs', route: '/main-menu/search-gigs', icon: 'fas fa-briefcase' },

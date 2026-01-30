@@ -117,7 +117,7 @@
         type="button"
         class="submit-btn" 
         [class.disabled]="isSearchDisabled()"
-        [disabled]="isSearchDisabled()"
+        [disabled]="isSearchDisabled() || isLoading()"
         (click)="searchGigs()"
       >
         @if (isLoading()) {
@@ -139,7 +139,15 @@
         <span>Search Results ({{ searchResults().length }})</span>
       </div>
 
-      @if (searchResults().length === 0 && !isLoading()) {
+      <!-- Error Message -->
+      @if (errorMessage()) {
+        <div class="error-message">
+          <i class="material-icons">error_outline</i>
+          <p>{{ errorMessage() }}</p>
+        </div>
+      }
+
+      @if (searchResults().length === 0 && !isLoading() && !errorMessage()) {
         <!-- Empty State -->
         <div class="empty-state">
           <div class="empty-icon">
@@ -148,7 +156,7 @@
           <h3>No Jobs Available</h3>
           <p>Try adjusting your search criteria or check back later</p>
         </div>
-      } @else {
+      } @else if (searchResults().length > 0) {
         <!-- Results List -->
         <div class="results-list">
           @for (gig of searchResults(); track gig.id; let i = $index) {

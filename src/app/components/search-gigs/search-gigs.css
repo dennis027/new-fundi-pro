@@ -541,6 +541,7 @@ select.form-control {
 
   .submit-btn {
     grid-column: 1 / -1;
+    color: black;
   }
 
   .results-list {

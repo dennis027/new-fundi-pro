@@ -1,11 +1,14 @@
 // search-gigs.component.ts
 
-import { afterNextRender, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { afterNextRender, Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AppBarService } from '../../services/app-bar-service';
+import { GigServices } from '../../services/gig-services';
+import RegionsData from '../../../assets/JSON-Files/regions.json';
+import { Router } from '@angular/router';
 
 interface JobType {
   id: number;
@@ -49,8 +52,12 @@ export class SearchGigs implements OnInit, OnDestroy {
   isLoading = signal(false);
   hasSearched = signal(false);
   searchResults = signal<Gig[]>([]);
+  errorMessage = signal<string>('');
 
   private appBar = inject(AppBarService);
+  private gigServices = inject(GigServices);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   // Form fields
   selectedCounty: string = '';
@@ -65,101 +72,8 @@ export class SearchGigs implements OnInit, OnDestroy {
   wards: string[] = [];
   jobTypes: JobType[] = [];
 
-  // Mock regions data
-  private regions: Region[] = [
-    {
-      county_name: 'Nairobi',
-      constituencies: [
-        {
-          constituency_name: 'Westlands',
-          wards: ['Parklands', 'Highridge', 'Karura', 'Kangemi', 'Mountain View']
-        },
-        {
-          constituency_name: 'Dagoretti North',
-          wards: ['Kilimani', 'Kawangware', 'Gatina', 'Kileleshwa', 'Kabiro']
-        },
-        {
-          constituency_name: 'Starehe',
-          wards: ['Nairobi Central', 'Ngara', 'Ziwani', 'Landimawe', 'Nairobi South']
-        }
-      ]
-    },
-    {
-      county_name: 'Kiambu',
-      constituencies: [
-        {
-          constituency_name: 'Kiambaa',
-          wards: ['Karuri', 'Ndenderu', 'Muchatha', 'Cianda', 'Kihara']
-        },
-        {
-          constituency_name: 'Kikuyu',
-          wards: ['Kikuyu', 'Kinoo', 'Nachu', 'Sigona', 'Karai']
-        }
-      ]
-    },
-    {
-      county_name: 'Mombasa',
-      constituencies: [
-        {
-          constituency_name: 'Mvita',
-          wards: ['Mji Wa Kale', 'Tudor', 'Tononoka', 'Shimanzi', 'Makadara']
-        },
-        {
-          constituency_name: 'Nyali',
-          wards: ['Frere Town', 'Ziwa La Ng\'ombe', 'Mkomani', 'Kongowea', 'Kadzandani']
-        }
-      ]
-    }
-  ];
-
-  // Mock job types
-  private mockJobTypes: JobType[] = [
-    { id: 1, name: 'Plumbing' },
-    { id: 2, name: 'Electrical' },
-    { id: 3, name: 'Carpentry' },
-    { id: 4, name: 'Painting' },
-    { id: 5, name: 'Masonry' }
-  ];
-
-  // Mock gigs
-  private mockGigs: Gig[] = [
-    {
-      id: 1,
-      job_type: 'Plumbing',
-      client_name: 'Nairobi Hospital',
-      county: 'Nairobi',
-      constituency: 'Westlands',
-      ward: 'Parklands',
-      is_verified: true
-    },
-    {
-      id: 2,
-      job_type: 'Electrical',
-      client_name: 'KNH',
-      county: 'Nairobi',
-      constituency: 'Dagoretti North',
-      ward: 'Kilimani',
-      is_verified: true
-    },
-    {
-      id: 3,
-      job_type: 'Carpentry',
-      client_name: 'Aga Khan Hospital',
-      county: 'Nairobi',
-      constituency: 'Westlands',
-      ward: 'Parklands',
-      is_verified: false
-    },
-    {
-      id: 4,
-      job_type: 'Painting',
-      client_name: 'MP Shah Hospital',
-      county: 'Nairobi',
-      constituency: 'Starehe',
-      ward: 'Nairobi Central',
-      is_verified: true
-    }
-  ];
+  // getting regions data
+  private regions: Region[] = RegionsData as Region[];
 
   constructor() {
     afterNextRender(() => {
@@ -177,20 +91,82 @@ export class SearchGigs implements OnInit, OnDestroy {
     this.appBar.setBack(true);
 
     this.loadRegions();
-    this.loadJobTypes();
+    if (isPlatformBrowser(this.platformId)) {
+      this.getJobTypes();
+    }
+  }
+filterGigsFromAPI(): void {
+  if (this.isSearchDisabled() || this.isLoading()) return;
+
+  this.isLoading.set(true);
+  this.hasSearched.set(true);
+  this.errorMessage.set('');
+
+  const jobTypeId: any = this.selectedJobType ? parseInt(this.selectedJobType, 10) : '';
+  
+  console.log('Searching with filters:', {
+    county: this.selectedCounty,
+    constituency: this.selectedConstituency,
+    ward: this.selectedWard,
+    jobTypeId: jobTypeId,
+    clientName: this.clientName
+  });
+
+  this.gigServices.searchGigsByType(
+    this.selectedCounty,
+    this.selectedConstituency,
+    this.selectedWard,
+    jobTypeId,
+    this.clientName.trim()
+  ).subscribe({
+    next: (data) => {
+      console.log('Search results received:', data);
+      this.searchResults.set(data);
+      this.isLoading.set(false);
+      this.clearForm();
+    },
+    error: (error) => {
+      console.error('Error searching gigs:', error);
+      this.isLoading.set(false);
+
+      if (error.status === 401) {
+        this.errorMessage.set('Please login to continue');
+        this.router.navigate(['/login']);
+      } else if (error.status === 404) {
+        this.errorMessage.set('No gigs found matching your criteria');
+        this.searchResults.set([]);
+      } else if (error.status === 500) {
+        this.errorMessage.set('Server error. Please try again later.');
+        this.searchResults.set([]);
+      } else {
+        this.errorMessage.set('An error occurred while searching. Please try again.');
+        this.searchResults.set([]);
+      }
+    }
+  });
+}
+
+  getJobTypes(): void {
+    this.gigServices.getGigTypes().subscribe({
+      next: (data) => {
+        this.jobTypes = data;
+        console.log('Job types loaded:', this.jobTypes);
+      },
+      error: (error) => {
+        console.error('Error fetching job types:', error);
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    // VERY IMPORTANT: cleanup
     this.appBar.clearActions();
   }
 
   loadRegions(): void {
     this.counties = this.regions.map(r => r.county_name);
-  }
-
-  loadJobTypes(): void {
-    this.jobTypes = [...this.mockJobTypes];
   }
 
   onCountyChanged(): void {
@@ -241,55 +217,7 @@ export class SearchGigs implements OnInit, OnDestroy {
   }
 
   searchGigs(): void {
-    if (this.isSearchDisabled() || this.isLoading()) return;
-
-    this.isLoading.set(true);
-    this.hasSearched.set(true);
-
-    console.log('Searching with filters:', {
-      county: this.selectedCounty,
-      constituency: this.selectedConstituency,
-      ward: this.selectedWard,
-      jobType: this.selectedJobType,
-      clientName: this.clientName
-    });
-
-    // Simulate API call
-    setTimeout(() => {
-      let results = [...this.mockGigs];
-
-      // Apply filters
-      if (this.selectedCounty) {
-        results = results.filter(g => g.county === this.selectedCounty);
-      }
-
-      if (this.selectedConstituency) {
-        results = results.filter(g => g.constituency === this.selectedConstituency);
-      }
-
-      if (this.selectedWard) {
-        results = results.filter(g => g.ward === this.selectedWard);
-      }
-
-      if (this.selectedJobType) {
-        const jobType = this.jobTypes.find(j => j.id.toString() === this.selectedJobType);
-        if (jobType) {
-          results = results.filter(g => g.job_type === jobType.name);
-        }
-      }
-
-      if (this.clientName.trim()) {
-        results = results.filter(g => 
-          g.client_name.toLowerCase().includes(this.clientName.toLowerCase())
-        );
-      }
-
-      this.searchResults.set(results);
-      this.isLoading.set(false);
-
-      // Clear form after search
-      this.clearForm();
-    }, 1000);
+    this.filterGigsFromAPI();
   }
 
   clearForm(): void {

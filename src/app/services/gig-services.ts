@@ -48,6 +48,9 @@ export class GigServices {
     return this.http.get<any>(this.apiUrl + 'job-types/'); 
   }
 
+  searchGigsByType(county: string, constituency: string, ward: string, jobTypeId: number,client_name:string): Observable<any> {
+    return this.http.get<any>(this.apiUrl + `search-gigs/?county=${county}&constituency=${constituency}&ward=${ward}&job_type=${jobTypeId}&client_name=${client_name}`); 
+  }
   
 }
 
