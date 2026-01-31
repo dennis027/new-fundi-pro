@@ -52,6 +52,9 @@ export class GigServices {
     return this.http.get<any>(this.apiUrl + `search-gigs/?county=${county}&constituency=${constituency}&ward=${ward}&job_type=${jobTypeId}&client_name=${client_name}`); 
   }
   
+  userWorkHistory(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'user-work-history/'); 
+  }
 }
 
  

@@ -1,11 +1,12 @@
 // workhistory.component.ts
 
-import { afterNextRender, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { afterNextRender, Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AppBarService } from '../../services/app-bar-service';
+import { GigServices } from '../../services/gig-services';
 
 interface WorkHistoryItem {
   id: number;
@@ -38,6 +39,8 @@ export class Workhistory implements OnInit, OnDestroy {
 
   private appBar = inject(AppBarService);
   private router = inject(Router);
+  private gigServices = inject(GigServices);
+  private platformId = inject(PLATFORM_ID);
 
   // Mock data
   private mockWorkHistory: WorkHistoryItem[] = [
@@ -104,12 +107,34 @@ export class Workhistory implements OnInit, OnDestroy {
     ]);
 
     this.fetchWorkHistory();
+
+    if (isPlatformBrowser(this.platformId)) {
+        this.getWorkHistoryFromAPI();
+    }
+
   }
 
   ngOnDestroy(): void {
     // VERY IMPORTANT: cleanup
     this.appBar.clearActions();
   }
+
+  getWorkHistoryFromAPI(): void {
+    this.isLoading.set(true);
+    this.gigServices.userWorkHistory().subscribe({
+      next: (data) => {
+        this.workHistory.set(data);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error fetching work history:', error);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  
+
 
   fetchWorkHistory(): void {
     this.isLoading.set(true);
