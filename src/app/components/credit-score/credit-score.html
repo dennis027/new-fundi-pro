@@ -1,1 +1,187 @@
-<p>credit-score works!</p>
+<br><br>
+<div class="credit-score-page">
+  
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="loading-container">
+        <div class="loading-circle">
+          <div class="spinner"></div>
+        </div>
+        <p class="loading-text">Loading your performance data...</p>
+        <p class="loading-subtext">This might take a moment</p>
+      </div>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else if (scores().length === 0) {
+    <div class="empty-state">
+      <div class="empty-container">
+        <div class="empty-icon">
+          <i class="material-icons">analytics</i>
+        </div>
+        <h2 class="empty-title">No Performance Data</h2>
+        <p class="empty-message">
+          Complete some gigs to start tracking your performance rate
+        </p>
+        <button class="refresh-btn" (click)="getCreditScore()">
+          <i class="material-icons">refresh</i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @else {
+    <div class="content-wrapper" [class.animate-in]="animateIn()">
+      
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card current-score" [style.--stat-color]="scoreColor">
+          <div class="stat-header">
+            <div class="stat-icon-box">
+              <i class="material-icons">trending_up</i>
+            </div>
+            <span class="stat-label">Today</span>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ currentScore.toFixed(1) }}%</div>
+            <div class="stat-title">Current Rate</div>
+          </div>
+        </div>
+
+        <div class="stat-card average-score">
+          <div class="stat-header">
+            <div class="stat-icon-box">
+              <i class="material-icons">bar_chart</i>
+            </div>
+            <span class="stat-label">Overall</span>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ averageScore.toFixed(1) }}%</div>
+            <div class="stat-title">Average Rate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Indicator -->
+      <div class="performance-indicator" [style.--perf-color]="scoreColor">
+        <div class="perf-icon-container">
+          <i class="material-icons">{{ performanceLevel.icon }}</i>
+        </div>
+        <div class="perf-content">
+          <h3 class="perf-title">{{ performanceLevel.title }}</h3>
+          <p class="perf-message">{{ performanceLevel.message }}</p>
+        </div>
+      </div>
+
+      <!-- Chart Card -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title-section">
+            <h2 class="chart-title">Performance Trend</h2>
+            <p class="chart-subtitle">Track your gig completion rate over time</p>
+          </div>
+          <div class="chart-badge" [style.background-color]="scoreColor + '20'" [style.color]="scoreColor">
+            {{ scoreChange }}
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <svg [attr.width]="getChartWidth()" [attr.height]="getChartHeight()" class="chart-svg">
+            <!-- Grid Lines -->
+            <g class="grid-lines">
+              @for (i of [0, 20, 40, 60, 80, 100]; track i) {
+                <line 
+                  [attr.x1]="40" 
+                  [attr.y1]="calculateY(i)" 
+                  [attr.x2]="getChartWidth() - 40" 
+                  [attr.y2]="calculateY(i)"
+                  class="grid-line"
+                />
+                <text 
+                  [attr.x]="30" 
+                  [attr.y]="calculateY(i) + 4"
+                  class="axis-label"
+                >{{ i }}%</text>
+              }
+            </g>
+
+            <!-- Area Fill (Gradient) -->
+            <defs>
+              <linearGradient [id]="'gradient-' + scoreColor.replace('#', '')" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" [attr.stop-color]="scoreColor" stop-opacity="0.3" />
+                <stop offset="50%" [attr.stop-color]="scoreColor" stop-opacity="0.1" />
+                <stop offset="100%" [attr.stop-color]="scoreColor" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path 
+              [attr.d]="getAreaPathData()" 
+              [attr.fill]="'url(#gradient-' + scoreColor.replace('#', '') + ')'"
+              class="chart-area"
+            />
+
+            <!-- Line -->
+            <path 
+              [attr.d]="getPathData()" 
+              [attr.stroke]="scoreColor"
+              fill="none"
+              stroke-width="3"
+              class="chart-line"
+            />
+
+            <!-- Data Points -->
+            @for (score of scores(); track score.timestamp; let i = $index) {
+              <g class="data-point-group">
+                <circle 
+                  [attr.cx]="calculateX(i)" 
+                  [attr.cy]="calculateY(score.new_score)"
+                  r="6"
+                  [attr.stroke]="scoreColor"
+                  stroke-width="3"
+                  fill="white"
+                  class="data-point"
+                />
+              </g>
+            }
+
+            <!-- X-Axis Labels -->
+            <g class="x-axis-labels">
+              @for (score of scores(); track score.timestamp; let i = $index) {
+                @if (shouldShowXAxisLabel(i)) {
+                  <text 
+                    [attr.x]="calculateX(i)" 
+                    [attr.y]="getChartHeight() - 5"
+                    class="x-axis-label"
+                  >{{ formatDate(score.timestamp) }}</text>
+                }
+              }
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Tips Section -->
+      <div class="tips-card">
+        <div class="tips-header">
+          <div class="tips-icon">
+            <i class="material-icons">lightbulb</i>
+          </div>
+          <h3 class="tips-title">Tips to Improve</h3>
+        </div>
+        <div class="tips-list">
+          @for (tip of tips; track tip) {
+            <div class="tip-item">
+              <div class="tip-bullet"></div>
+              <p class="tip-text">{{ tip }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

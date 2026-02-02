@@ -55,6 +55,10 @@ export class GigServices {
   userWorkHistory(): Observable<any> {
     return this.http.get<any>(this.apiUrl + 'user-work-history/'); 
   }
+
+  creditScore(): Observable<any> {  
+    return this.http.get<any>(this.apiUrl + 'credit-history/');
+  }
 }
 
  
