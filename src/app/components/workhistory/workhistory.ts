@@ -19,7 +19,10 @@ interface WorkHistoryItem {
   ward: string;
   constituency: string;
   county: string;
-  job_type?: string;
+  job_type?: number;
+  organization?: number;
+  worker?: number;
+  is_verified?: boolean;
 }
 
 @Component({
@@ -42,52 +45,8 @@ export class Workhistory implements OnInit, OnDestroy {
   private gigServices = inject(GigServices);
   private platformId = inject(PLATFORM_ID);
 
-  // Mock data
-  private mockWorkHistory: WorkHistoryItem[] = [
-    {
-      id: 1,
-      created_at: '2025-01-03T10:30:00',
-      start_date: '2025-01-01',
-      duration_value: 5,
-      duration_unit: 'days',
-      client_name: 'Nairobi Hospital',
-      client_phone: '0712345678',
-      ward: 'Parklands',
-      constituency: 'Westlands',
-      county: 'Nairobi',
-      job_type: 'Plumbing'
-    },
-    {
-      id: 2,
-      created_at: '2024-12-28T14:20:00',
-      start_date: '2024-12-26',
-      duration_value: 2,
-      duration_unit: 'weeks',
-      client_name: 'KNH',
-      client_phone: '0723456789',
-      ward: 'Kilimani',
-      constituency: 'Dagoretti North',
-      county: 'Nairobi',
-      job_type: 'Electrical'
-    },
-    {
-      id: 3,
-      created_at: '2024-12-15T09:15:00',
-      start_date: '2024-12-10',
-      duration_value: 7,
-      duration_unit: 'days',
-      client_name: 'Aga Khan Hospital',
-      client_phone: '0734567890',
-      ward: 'Parklands',
-      constituency: 'Westlands',
-      county: 'Nairobi',
-      job_type: 'Carpentry'
-    }
-  ];
-
   constructor() {
     afterNextRender(() => {
-      // Any browser-only code
     });
   }
 
@@ -101,21 +60,17 @@ export class Workhistory implements OnInit, OnDestroy {
         icon: 'refresh',
         ariaLabel: 'Refresh',
         onClick: () => {
-          this.fetchWorkHistory();
+          this.getWorkHistoryFromAPI();
         },
       }
     ]);
 
-    this.fetchWorkHistory();
-
     if (isPlatformBrowser(this.platformId)) {
-        this.getWorkHistoryFromAPI();
+      this.getWorkHistoryFromAPI();
     }
-
   }
 
   ngOnDestroy(): void {
-    // VERY IMPORTANT: cleanup
     this.appBar.clearActions();
   }
 
@@ -124,26 +79,17 @@ export class Workhistory implements OnInit, OnDestroy {
     this.gigServices.userWorkHistory().subscribe({
       next: (data) => {
         this.workHistory.set(data);
+        console.log('Work history fetched successfully:', this.workHistory());
         this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error fetching work history:', error);
         this.isLoading.set(false);
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } 
       }
     });
-  }
-
-  
-
-
-  fetchWorkHistory(): void {
-    this.isLoading.set(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      this.workHistory.set([...this.mockWorkHistory]);
-      this.isLoading.set(false);
-    }, 1000);
   }
 
   formatDate(dateStr: string): string {
