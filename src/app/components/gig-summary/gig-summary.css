@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: space-between;
   background: white;
-  padding: 20px 24px;
+  padding: 18px 24px;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   margin-bottom: 24px;
@@ -47,54 +47,57 @@
 .actions-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .page-title {
   margin: 0;
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--text-dark);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  letter-spacing: -0.3px;
 }
 
 .page-title i {
-  font-size: 32px;
+  font-size: 24px;
   color: var(--primary);
 }
 
 .gig-count {
-  padding: 6px 16px;
+  padding: 5px 14px;
   background: var(--primary-light);
   color: var(--primary);
-  border-radius: 20px;
-  font-size: 14px;
+  border-radius: 16px;
+  font-size: 13px;
   font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .actions-right {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .action-btn {
-  padding: 12px 24px;
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+  letter-spacing: 0.2px;
 }
 
 .action-btn i {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .primary-btn {
@@ -169,9 +172,10 @@
 }
 
 .loading-container p {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-muted);
   margin: 0;
+  font-weight: 500;
 }
 
 /* ---------- EMPTY STATE ---------- */
@@ -205,15 +209,17 @@
 .empty-state h3 {
   margin: 0 0 12px;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 700;
   color: var(--text-dark);
+  letter-spacing: -0.5px;
 }
 
 .empty-state p {
   margin: 0 0 32px;
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-muted);
   line-height: 1.5;
+  font-weight: 500;
 }
 
 .add-first-btn {
@@ -221,9 +227,9 @@
   color: white !important;
   border: none;
   border-radius: var(--radius);
-  padding: 14px 32px;
-  font-size: 16px;
-  font-weight: bold;
+  padding: 13px 28px;
+  font-size: 15px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -231,10 +237,11 @@
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
   font-family: inherit;
+  letter-spacing: 0.2px;
 }
 
 .add-first-btn i {
-  font-size: 22px;
+  font-size: 20px;
   color: white !important;
 }
 
@@ -263,13 +270,13 @@
 .gig-card {
   background: white;
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 18px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .gig-card.verified {
@@ -292,27 +299,30 @@
 
 .card-header h3 {
   margin: 0;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 17px;
+  font-weight: 700;
   color: var(--text-dark);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: -0.2px;
 }
 
 /* Status Badge */
 .status-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 700;
   flex-shrink: 0;
   white-space: nowrap;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
 .status-badge.approved {
@@ -328,16 +338,16 @@
 }
 
 .status-badge i {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 /* Info Boxes */
 .info-box {
-  padding: 14px;
+  padding: 13px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 11px;
 }
 
 .client-info {
@@ -364,11 +374,11 @@
 .info-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
 }
 
 .info-row i {
-  font-size: 20px;
+  font-size: 18px;
   color: var(--text-muted);
   flex-shrink: 0;
   margin-top: 2px;
@@ -383,7 +393,7 @@
 }
 
 .info-content .label {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(0, 0, 0, 0.5);
   font-weight: 600;
   text-transform: uppercase;
@@ -391,10 +401,11 @@
 }
 
 .info-content .value {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-dark);
   word-break: break-word;
+  line-height: 1.4;
 }
 
 /* ---------- DIALOG STYLES ---------- */
@@ -406,7 +417,7 @@
 
 .dialog-header {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  padding: 20px;
+  padding: 18px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -426,13 +437,13 @@
 .header-content {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex: 1;
 }
 
 .header-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
@@ -442,15 +453,16 @@
 }
 
 .header-icon i {
-  font-size: 28px;
+  font-size: 24px;
   color: black !important;
 }
 
 .header-text h2 {
-  margin: 0 0 4px;
-  font-size: 20px;
-  font-weight: bold;
+  margin: 0 0 3px;
+  font-size: 18px;
+  font-weight: 700;
   color: black !important;
+  letter-spacing: -0.2px;
 }
 
 .header-text p {
@@ -458,6 +470,7 @@
   font-size: 13px;
   opacity: 0.9;
   color: black !important;
+  font-weight: 500;
 }
 
 .close-btn {
@@ -472,7 +485,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-
 }
 
 .close-btn:hover {
@@ -482,18 +494,18 @@
 
 .close-btn i {
   color: black !important;
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .dialog-body {
-  padding: 24px;
+  padding: 22px;
   overflow-y: auto;
   flex: 1;
 }
 
 .form-section {
-  margin-bottom: 24px;
-  padding-bottom: 24px;
+  margin-bottom: 22px;
+  padding-bottom: 22px;
   border-bottom: 2px solid #f3f4f6;
 }
 
@@ -507,18 +519,19 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--primary);
-  margin: 0 0 16px;
+  margin: 0 0 14px;
+  letter-spacing: -0.2px;
 }
 
 .section-title i {
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
 .form-group:last-child {
@@ -527,10 +540,11 @@
 
 .form-group label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #374151;
   margin-bottom: 6px;
+  letter-spacing: 0.1px;
 }
 
 .form-control {
@@ -578,10 +592,49 @@
   flex: 2;
 }
 
+.customer-details {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-details ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.customer-details li {
+  font-size: 13px;
+  color: #4b5563;
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+
+.customer-details li:last-child {
+  margin-bottom: 0;
+}
+
+.customer-details strong {
+  font-size: 12px;
+  color: #1f2937;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+  margin-top: 8px;
+  letter-spacing: 0.2px;
+}
+
+.customer-details strong:first-child {
+  margin-top: 0;
+}
+
 .dialog-footer {
   display: flex;
   gap: 12px;
-  padding: 16px 24px;
+  padding: 15px 22px;
   border-top: 1px solid #e5e7eb;
   background: #f9fafb;
   flex-shrink: 0;
@@ -590,18 +643,19 @@
 .cancel-btn,
 .submit-btn {
   flex: 1;
-  padding: 12px 20px;
+  padding: 11px 18px;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+  letter-spacing: 0.2px;
 }
 
 .cancel-btn {
@@ -612,6 +666,7 @@
 
 .cancel-btn i {
   color: #374151 !important;
+  font-size: 18px;
 }
 
 .cancel-btn span {
@@ -631,6 +686,7 @@
 
 .submit-btn i {
   color: black !important;
+  font-size: 18px;
 }
 
 .submit-btn span {
@@ -649,8 +705,8 @@
 }
 
 .spinner-small {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -672,28 +728,28 @@
   }
 
   .card-header h3 {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .status-badge {
-    font-size: 11px;
-    padding: 6px 10px;
+    font-size: 10px;
+    padding: 5px 9px;
   }
 
   .status-badge i {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .info-row i {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .info-content .label {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .info-content .value {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .empty-state {
@@ -714,7 +770,7 @@
   }
 
   .empty-state p {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   /* Dialog mobile styles */
@@ -728,11 +784,11 @@
   }
 
   .header-icon i {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .header-text h2 {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .header-text p {
@@ -766,20 +822,20 @@
 
   .gigs-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 18px;
   }
 
   .gig-card {
-    padding: 18px;
+    padding: 17px;
   }
 
   .card-header h3 {
-    font-size: 19px;
+    font-size: 16px;
   }
 
   .status-badge {
-    font-size: 12px;
-    padding: 7px 12px;
+    font-size: 11px;
+    padding: 6px 11px;
   }
 }
 
@@ -797,11 +853,15 @@
 
   .gigs-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: 20px;
   }
 
   .gig-card {
-    padding: 20px;
+    padding: 18px;
+  }
+
+  .card-header h3 {
+    font-size: 17px;
   }
 }
 
@@ -815,28 +875,42 @@
 
   .desktop-actions {
     display: flex !important;
-    padding: 24px 32px;
+    padding: 20px 28px;
   }
 
   .page-title {
-    font-size: 32px;
+    font-size: 22px;
   }
 
   .page-title i {
-    font-size: 36px;
+    font-size: 26px;
+  }
+
+  .gig-count {
+    font-size: 14px;
+    padding: 6px 15px;
+  }
+
+  .action-btn {
+    padding: 11px 22px;
+    font-size: 14px;
   }
 
   .gigs-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 22px;
   }
 
   .gig-card {
-    padding: 24px;
+    padding: 20px;
   }
 
   .card-header h3 {
-    font-size: 21px;
+    font-size: 18px;
+  }
+
+  .info-content .value {
+    font-size: 14px;
   }
 
   .empty-state {
@@ -844,20 +918,20 @@
   }
 
   .empty-icon {
-    width: 140px;
-    height: 140px;
+    width: 130px;
+    height: 130px;
   }
 
   .empty-icon i {
-    font-size: 72px;
+    font-size: 68px;
   }
 
   .empty-state h3 {
-    font-size: 28px;
+    font-size: 26px;
   }
 
   .empty-state p {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -871,32 +945,42 @@
 
   .desktop-actions {
     display: flex !important;
-    padding: 28px 40px;
+    padding: 22px 32px;
   }
 
   .page-title {
-    font-size: 36px;
+    font-size: 24px;
   }
 
   .page-title i {
-    font-size: 40px;
+    font-size: 28px;
+  }
+
+  .gig-count {
+    font-size: 14px;
+    padding: 6px 16px;
+  }
+
+  .action-btn {
+    padding: 12px 24px;
+    font-size: 15px;
   }
 
   .gigs-grid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 28px;
+    gap: 24px;
   }
 
   .gig-card {
-    padding: 28px;
+    padding: 22px;
   }
 
   .card-header h3 {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .info-content .value {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 

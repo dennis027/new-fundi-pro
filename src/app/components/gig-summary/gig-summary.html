@@ -181,27 +181,28 @@
             <span class="error-message">{{ getErrorMessage('organization') }}</span>
           }
         </div>
-
-        <div  class="customer-details">
-          <ul>
-          @if(selectedPhoneNumber){
-              <strong>Phone Number:</strong>
-              <li>{{selectedPhoneNumber}}</li>
+        @if(selectedPhoneNumber || selectedCounty || selectedConstituency || selectedWard ){
+          <div  class="customer-details">
+            <ul>
+            @if(selectedPhoneNumber){
+                <strong>Phone Number:</strong>
+                <li>{{selectedPhoneNumber}}</li>
+              }
+            @if(selectedCounty ){
+                <strong>County:</strong>
+                <li>{{selectedCounty}}</li>
             }
-           @if(selectedCounty ){
-              <strong>County:</strong>
-              <li>{{selectedCounty}}</li>
-           }
-          @if(selectedConstituency ){
-              <strong>Constituency:</strong>
-              <li>{{selectedConstituency}}</li>
-           }
-          @if(selectedWard){
-              <strong>Ward:</strong>
-             <li>{{selectedWard}}</li>
-           }
-          </ul>
-        </div>
+            @if(selectedConstituency ){
+                <strong>Constituency:</strong>
+                <li>{{selectedConstituency}}</li>
+            }
+            @if(selectedWard){
+                <strong>Ward:</strong>
+              <li>{{selectedWard}}</li>
+            }
+            </ul>
+          </div>
+      }
 
       </div>
 
