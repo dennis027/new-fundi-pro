@@ -23,4 +23,28 @@ export class UserService {
       payload
     );
   }
-}
+
+  fundiStats(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'fundi/dashboard/stats/'); 
+  }
+
+  userRecentWorks(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'fundi/dashboard/recent-work/'); 
+  }
+
+  dashCalendarData(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'fundi/dashboard/calendar/'); 
+  }
+
+  creditHistory(): Observable<any> { 
+    return this.http.get<any>(this.apiUrl + 'fundi/dashboard/credit-history/'); 
+  }
+
+  allGigView(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'fundi/dashboard/all-gigs/'); 
+  }
+  getAllOrgs(): Observable<any> {
+    return this.http.get<any>(this.apiUrl + 'fundi/dashboard/organizations/'); 
+  }
+
+}                   

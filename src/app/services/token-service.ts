@@ -29,4 +29,4 @@ export class TokenService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
-}
+}        
