@@ -11,6 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AppBarService } from '../../services/app-bar-service';
 import { UserService } from '../../services/user-service';
 import { environment } from '../../../environments/environment';
+import { forkJoin } from 'rxjs';
 
 interface WorkLog {
   id: number;
@@ -22,10 +23,21 @@ interface WorkLog {
 }
 
 interface CalendarDay {
-  date: Date;
+  date: string;
   dayNum: number;
   status: 'verified' | 'pending' | 'empty';
   tooltip: string;
+}
+
+interface DashboardStats {
+  total_gigs: number;
+  verified_gigs: number;
+  verified_days: number;
+  verification_rate: number;
+  sites_worked: number;
+  disputes: number;
+  history_months: number;
+  credit_score: number;
 }
 
 @Component({
@@ -47,67 +59,35 @@ export class FundiDash implements OnInit, OnDestroy {
   @ViewChild('accountMenuTrigger') accountMenuTrigger!: MatMenuTrigger;
   
   isMobile = signal(false);
+  isLoading = signal(true);
+  
   private appBar = inject(AppBarService);
   private router = inject(Router);
   private userService = inject(UserService);
   private platformId = inject(PLATFORM_ID);
+  
   // User data
   username = signal<string>('');
   email = signal<string>('');
   fullname = signal<string>('');
-  imgFile = signal<any>('');
-  location= signal<any>('');
+  imgFile = signal<string>('');
+  location = signal<string>('');
   
-  // Trust-focused metrics
-  totalGigs: number = 8;
-  verifiedGigs: number = 6;
-  verifiedDays: number = 18;  // Last 30 days
-  verificationRate: number = 92;
-  sitesWorked: number = 2;
-  disputes: number = 0;
-  historyMonths: number = 2;  // Building toward 3 months
+  // Trust-focused metrics (now from API)
+  totalGigs = signal<number>(0);
+  verifiedGigs = signal<number>(0);
+  verifiedDays = signal<number>(0);
+  verificationRate = signal<number>(0);
+  sitesWorked = signal<number>(0);
+  disputes = signal<number>(0);
+  historyMonths = signal<number>(0);
+  creditScore = signal<number>(0);
   
-  // API URLs (not used, kept for compatibility)
-  apiUrl: string = '';
-  imgUrl: string = '';
-
-  // Recent work logs (site-based, not client-based)
-  recentWorkLogs: WorkLog[] = [
-    {
-      id: 1,
-      siteName: 'Westlands Construction Site',
-      jobType: 'Plumbing',
-      date: '2025-01-03',
-      verified: true,
-      foremanName: 'James Kiprotich'
-    },
-    {
-      id: 2,
-      siteName: 'Kilimani Apartments',
-      jobType: 'Electrical Work',
-      date: '2025-01-02',
-      verified: true,
-      foremanName: 'Mary Njeri'
-    },
-    {
-      id: 3,
-      siteName: 'Westlands Construction Site',
-      jobType: 'Carpentry',
-      date: '2025-01-01',
-      verified: false
-    },
-    {
-      id: 4,
-      siteName: 'Karen Residential',
-      jobType: 'Painting',
-      date: '2024-12-30',
-      verified: true,
-      foremanName: 'Peter Omondi'
-    }
-  ];
-
-  // 30-day activity calendar
-  last30Days: CalendarDay[] = [];
+  // Recent work logs (from API)
+  recentWorkLogs = signal<WorkLog[]>([]);
+  
+  // 30-day activity calendar (from API)
+  last30Days = signal<CalendarDay[]>([]);
 
   constructor() {
     afterNextRender(() => {
@@ -137,64 +117,83 @@ export class FundiDash implements OnInit, OnDestroy {
       },
     ]);
 
-    this.generateLast30Days();
     if (isPlatformBrowser(this.platformId)) {
-    this.getLoggedInUser();
+      this.loadDashboardData();
     }
   }
 
-  getLoggedInUser(): void { 
-    this.userService.getUserDetails().subscribe({
-      next: (data) => {
-        // Update signals instead of raw properties
-        this.username.set(data.username || '');
-        this.fullname.set(data.full_name || '');
-        this.email.set(data.email || '');
-        this.location.set(data.county+' ' +data.constituency +' ' + data.ward || '');
-        this.imgFile.set(`${environment.apiUrl}${data.profile_image ?? ''}`);
-        console.log('User data fetched:', data);
+  /**
+   * Load all dashboard data from API
+   */
+  private loadDashboardData(): void {
+    this.isLoading.set(true);
+
+    // Load all data in parallel using forkJoin
+    forkJoin({
+      userProfile: this.userService.getUserDetails(),
+      dashboardStats: this.userService.fundiStats(),
+      recentWork: this.userService.userRecentWorks(),
+      calendar: this.userService.dashCalendarData()
+    }).subscribe({
+      next: (results) => {
+        console.log('Dashboard data loaded:', results);
+
+        // Set user data
+        this.username.set(results.userProfile.username || '');
+        this.fullname.set(results.userProfile.full_name || '');
+        this.email.set(results.userProfile.email || '');
+        
+        const location = [
+          results.userProfile.county,
+          results.userProfile.constituency,
+          results.userProfile.ward
+        ].filter(Boolean).join(', ');
+        this.location.set(location);
+        
+        // Handle profile image
+        if (results.userProfile.profile_pic) {
+          this.imgFile.set(`${environment.apiUrl}${results.userProfile.profile_pic}`);
+        }
+
+        // Set dashboard stats
+        const stats = results.dashboardStats as DashboardStats;
+        this.totalGigs.set(stats.total_gigs);
+        this.verifiedGigs.set(stats.verified_gigs);
+        this.verifiedDays.set(stats.verified_days);
+        this.verificationRate.set(stats.verification_rate);
+        this.sitesWorked.set(stats.sites_worked);
+        this.disputes.set(stats.disputes);
+        this.historyMonths.set(stats.history_months);
+        this.creditScore.set(stats.credit_score);
+
+        // Set recent work logs
+        this.recentWorkLogs.set(results.recentWork);
+
+        // Set calendar data
+        this.last30Days.set(results.calendar);
+
+        this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error fetching user profile', err);
+        console.error('Error loading dashboard data:', err);
+        this.isLoading.set(false);
+        
         if (err.status === 401) {
+          console.error('Unauthorized - redirecting to login');
           this.router.navigate(['/login']);
+        } else {
+          // Show error message to user
+          console.error('Failed to load dashboard data. Please try again.');
         }
       }
-    }); 
+    });
   }
 
-
-  // Generate 30-day activity calendar
-  private generateLast30Days(): void {
-    const today = new Date();
-    const calendar: CalendarDay[] = [];
-    
-    // Mock verified days pattern
-    const verifiedDays = [1, 2, 3, 5, 6, 8, 9, 10, 12, 13, 15, 16, 17, 19, 20, 22, 23, 24];
-    const pendingDays = [4, 7, 11];
-    
-    for (let i = 29; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      const dayNum = date.getDate();
-      
-      let status: 'verified' | 'pending' | 'empty' = 'empty';
-      let tooltip = `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-      
-      if (verifiedDays.includes(dayNum % 30)) {
-        status = 'verified';
-        tooltip += ' - Work verified';
-      } else if (pendingDays.includes(dayNum % 30)) {
-        status = 'pending';
-        tooltip += ' - Pending verification';
-      } else {
-        tooltip += ' - No work logged';
-      }
-      
-      calendar.push({ date, dayNum, status, tooltip });
-    }
-    
-    this.last30Days = calendar;
+  /**
+   * Refresh dashboard data
+   */
+  refreshDashboard(): void {
+    this.loadDashboardData();
   }
 
   // Menu action handlers
@@ -217,11 +216,54 @@ export class FundiDash implements OnInit, OnDestroy {
     this.appBar.clearActions();
   }
 
-  // Get score gradient for circular progress (kept for compatibility)
+  /**
+   * Get score gradient for circular progress
+   */
   getScoreGradient(): string {
-    const percentage = (this.verificationRate / 100) * 360;
-    const color = this.verificationRate >= 70 ? '#2e7d32' : '#f97316';
+    const rate = this.verificationRate();
+    const percentage = (rate / 100) * 360;
+    const color = rate >= 70 ? '#2e7d32' : '#f97316';
     
     return `conic-gradient(${color} 0deg ${percentage}deg, #e5e7eb ${percentage}deg)`;
+  }
+
+  /**
+   * Get credit score gradient
+   */
+  getCreditScoreGradient(): string {
+    const score = this.creditScore();
+    const percentage = (score / 100) * 360;
+    let color = '#ef4444'; // red for low scores
+    
+    if (score >= 70) {
+      color = '#22c55e'; // green for high scores
+    } else if (score >= 40) {
+      color = '#f97316'; // orange for medium scores
+    }
+    
+    return `conic-gradient(${color} 0deg ${percentage}deg, #e5e7eb ${percentage}deg)`;
+  }
+
+  /**
+   * Format date for display
+   */
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }
+
+  /**
+   * Get verification status text
+   */
+  getVerificationStatus(): string {
+    if (this.historyMonths() >= 3) {
+      return '✓ Ready for Credit';
+    } else {
+      return `⏳ ${3 - this.historyMonths()} months to go`;
+    }
   }
 }

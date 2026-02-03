@@ -26,7 +26,16 @@
 
 <div class="page">
   
-  @if (isMobile()) { 
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+  }
+
+  <!-- Mobile View -->
+  @if (isMobile() && !isLoading()) { 
     <br><br>
     
     <!-- Welcome Card -->
@@ -38,31 +47,31 @@
           class="profile-avatar"
         />
         <div class="header-text">
-          <h2>Hello, {{ fullname() }}!</h2>
+          <h2>Hello, {{ fullname() || username() }}!</h2>
           <p>{{ email() }}</p>
         </div>
       </div>
     </section>
 
-    <!-- Work History Status Card (REPLACES Credit Score) -->
+    <!-- Work History Status Card -->
     <section class="card trust-status-card">
       <h3>🛡️ Work History Status</h3>
       <div class="trust-metrics">
         <div class="metric-row">
           <span class="label">Verified Days (30d)</span>
-          <span class="value">{{ verifiedDays }}</span>
+          <span class="value">{{ verifiedDays() }}</span>
         </div>
         <div class="metric-row">
           <span class="label">Verification Rate</span>
-          <span class="value">{{ verificationRate }}%</span>
+          <span class="value">{{ verificationRate() }}%</span>
         </div>
         <div class="metric-row">
           <span class="label">Sites Worked</span>
-          <span class="value">{{ sitesWorked }}</span>
+          <span class="value">{{ sitesWorked() }}</span>
         </div>
         <div class="metric-row">
           <span class="label">Disputes</span>
-          <span class="value">{{ disputes }}</span>
+          <span class="value">{{ disputes() }}</span>
         </div>
       </div>
     </section>
@@ -71,7 +80,7 @@
     <section class="card timeline-card">
       <h3>📆 Work Activity (Last 30 Days)</h3>
       <div class="activity-calendar">
-        @for (day of last30Days; track day.date) {
+        @for (day of last30Days(); track day.date) {
           <div class="day-cell" 
                [class.verified]="day.status === 'verified'"
                [class.pending]="day.status === 'pending'"
@@ -88,7 +97,7 @@
       </div>
     </section>
 
-    <!-- Quick Actions Grid (UPDATED LABELS) -->
+    <!-- Quick Actions Grid -->
     <section class="mobile-nav">
       <!-- Log Work -->
       <div class="nav-card" routerLink="/main-menu/gig">
@@ -127,13 +136,13 @@
       </div>
     </section>
 
-    <!-- Work History Summary (RENAMED) -->
+    <!-- Work History Summary -->
     <section class="card list-card" routerLink="/main-menu/gig-summary">
       <div class="list-item">
         <i class="material-icons green">work_outline</i>
         <div>
           <h4>Work History Summary</h4>
-          <p>{{ verifiedGigs }} Verified / {{ totalGigs }} Total Days</p>
+          <p>{{ verifiedGigs() }} Verified / {{ totalGigs() }} Total Days</p>
         </div>
         <i class="material-icons">chevron_right</i>
       </div>
@@ -145,20 +154,22 @@
       <div class="profile-info">
         <div class="info-row">
           <i class="material-icons">person</i>
-          <span>{{ fullname() }}</span>
+          <span>{{ fullname() || username() }}</span>
         </div>
         <div class="info-row">
           <i class="material-icons">email</i>
           <span>{{ email() }}</span>
         </div>
-        <div class="info-row">
-          <i class="material-icons">location_on</i>
-          <span>{{ location() }}</span>
-        </div>
+        @if (location()) {
+          <div class="info-row">
+            <i class="material-icons">location_on</i>
+            <span>{{ location() }}</span>
+          </div>
+        }
       </div>
     </section>
 
-    <!-- Credit Readiness Preview (MOVED TO BOTTOM, LOCKED) -->
+    <!-- Credit Readiness Preview -->
     <section class="card credit-preview-card">
       <div class="locked-header">
         <i class="material-icons">lock</i>
@@ -167,29 +178,29 @@
       <div class="preview-content">
         <div class="preview-row">
           <span>History length:</span>
-          <strong>{{ historyMonths }} months</strong>
+          <strong>{{ historyMonths() }} months</strong>
         </div>
         <div class="preview-row">
           <span>Minimum required:</span>
           <strong>3 months</strong>
         </div>
-        <div class="status-row" [class.ready]="historyMonths >= 3">
+        <div class="status-row" [class.ready]="historyMonths() >= 3">
           <span>Status:</span>
-          <strong>{{ historyMonths >= 3 ? '✓ Ready' : '⏳ Building history' }}</strong>
+          <strong>{{ getVerificationStatus() }}</strong>
         </div>
       </div>
     </section>
   }
 
-  <!-- 🔥 DESKTOP DASHBOARD (UPDATED FOR TRUST) -->
-  @if (!isMobile()) {
+  <!-- Desktop View -->
+  @if (!isMobile() && !isLoading()) {
     <!-- Desktop Header -->
     <div class="desktop-header">
       <h1>Work History Dashboard</h1>
       <p>Track your verified work to build credibility</p>
     </div>
 
-    <!-- Stats Grid (UPDATED LABELS) -->
+    <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-header">
@@ -198,7 +209,7 @@
           </div>
         </div>
         <h3>Verified Days</h3>
-        <p class="stat-value">{{ verifiedDays }}</p>
+        <p class="stat-value">{{ verifiedDays() }}</p>
         <p class="stat-subtitle">Last 30 days</p>
       </div>
 
@@ -209,7 +220,7 @@
           </div>
         </div>
         <h3>Sites Worked</h3>
-        <p class="stat-value">{{ sitesWorked }}</p>
+        <p class="stat-value">{{ sitesWorked() }}</p>
         <p class="stat-subtitle">Active locations</p>
       </div>
 
@@ -220,7 +231,7 @@
           </div>
         </div>
         <h3>Verification Rate</h3>
-        <p class="stat-value">{{ verificationRate }}%</p>
+        <p class="stat-value">{{ verificationRate() }}%</p>
         <p class="stat-subtitle">Trust score</p>
       </div>
 
@@ -230,49 +241,62 @@
             <i class="material-icons">calendar_month</i>
           </div>
         </div>
-        <h3>This Month</h3>
-        <p class="stat-value">{{ verifiedGigs }}</p>
-        <p class="stat-subtitle">Verified days</p>
+        <h3>Total Gigs</h3>
+        <p class="stat-value">{{ totalGigs() }}</p>
+        <p class="stat-subtitle">All time</p>
       </div>
     </div>
 
     <!-- Desktop Content Grid -->
     <div class="desktop-grid">
-      <!-- Recent Work Logs (RENAMED & UPDATED) -->
+      <!-- Recent Work Logs -->
       <div class="desktop-card recent-jobs">
         <div class="card-header">
           <h2>Recent Work Logs</h2>
+          <button mat-button (click)="refreshDashboard()">
+            <mat-icon>refresh</mat-icon>
+            Refresh
+          </button>
         </div>
         <div class="jobs-list">
-          @for (log of recentWorkLogs; track log.id) {
-            <div class="job-item">
-              <div class="job-main">
-                <div class="job-info">
-                  <h3>{{ log.siteName }}</h3>
-                  <p>{{ log.jobType }}</p>
-                </div>
-                <span class="job-status">{{ log.date }}</span>
-              </div>
-              <div class="job-footer">
-                <span class="status-badge" [class.completed]="log.verified" [class.pending]="!log.verified">
-                  <i class="material-icons">{{ log.verified ? 'verified' : 'schedule' }}</i>
-                  {{ log.verified ? 'Verified' : 'Pending' }}
-                </span>
-                <span class="verified-by" *ngIf="log.verified">by {{ log.foremanName }}</span>
-              </div>
+          @if (recentWorkLogs().length === 0) {
+            <div class="empty-state">
+              <i class="material-icons">work_off</i>
+              <p>No work logged yet</p>
             </div>
+          } @else {
+            @for (log of recentWorkLogs(); track log.id) {
+              <div class="job-item">
+                <div class="job-main">
+                  <div class="job-info">
+                    <h3>{{ log.siteName }}</h3>
+                    <p>{{ log.jobType }}</p>
+                  </div>
+                  <span class="job-status">{{ formatDate(log.date) }}</span>
+                </div>
+                <div class="job-footer">
+                  <span class="status-badge" [class.completed]="log.verified" [class.pending]="!log.verified">
+                    <i class="material-icons">{{ log.verified ? 'verified' : 'schedule' }}</i>
+                    {{ log.verified ? 'Verified' : 'Pending' }}
+                  </span>
+                  @if (log.verified && log.foremanName) {
+                    <span class="verified-by">by {{ log.foremanName }}</span>
+                  }
+                </div>
+              </div>
+            }
           }
         </div>
       </div>
 
-      <!-- Work Activity Timeline (RIGHT COLUMN) -->
+      <!-- Work Activity Timeline -->
       <div class="desktop-card">
         <div class="card-header">
           <h2>Work Activity</h2>
         </div>
         <div class="timeline-desktop">
           <div class="activity-calendar-desktop">
-            @for (day of last30Days; track day.date) {
+            @for (day of last30Days(); track day.date) {
               <div class="day-cell-desktop" 
                    [class.verified]="day.status === 'verified'"
                    [class.pending]="day.status === 'pending'"
@@ -294,21 +318,25 @@
           <h3>Trust Metrics</h3>
           <div class="metric-item">
             <span class="label">Verified Days (30d)</span>
-            <span class="value">{{ verifiedDays }}</span>
+            <span class="value">{{ verifiedDays() }}</span>
           </div>
           <div class="metric-item">
             <span class="label">Verification Rate</span>
-            <span class="value">{{ verificationRate }}%</span>
+            <span class="value">{{ verificationRate() }}%</span>
           </div>
           <div class="metric-item">
             <span class="label">Disputes</span>
-            <span class="value">{{ disputes }}</span>
+            <span class="value">{{ disputes() }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Credit Score</span>
+            <span class="value">{{ creditScore() }}/100</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Credit Readiness (DESKTOP BOTTOM) -->
+    <!-- Credit Readiness (Desktop) -->
     <section class="card credit-preview-card-desktop">
       <div class="locked-header">
         <i class="material-icons">lock</i>
@@ -317,15 +345,15 @@
       <div class="preview-content-desktop">
         <div class="preview-metric">
           <span class="label">History length</span>
-          <span class="value">{{ historyMonths }} months</span>
+          <span class="value">{{ historyMonths() }} months</span>
         </div>
         <div class="preview-metric">
           <span class="label">Minimum required</span>
           <span class="value">3 months</span>
         </div>
-        <div class="preview-metric status" [class.ready]="historyMonths >= 3">
+        <div class="preview-metric status" [class.ready]="historyMonths() >= 3">
           <span class="label">Status</span>
-          <span class="value">{{ historyMonths >= 3 ? '✓ Ready' : '⏳ Building' }}</span>
+          <span class="value">{{ getVerificationStatus() }}</span>
         </div>
       </div>
     </section>

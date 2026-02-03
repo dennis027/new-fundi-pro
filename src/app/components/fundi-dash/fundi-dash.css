@@ -24,6 +24,51 @@
   padding: 16px;
 }
 
+/* ---------- LOADING STATE ---------- */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e7eb;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state i {
+  font-size: 64px;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* ---------- MOBILE ONLY STYLES ---------- */
 @media (max-width: 991px) {
   .page {
@@ -40,13 +85,13 @@
     margin-bottom: 16px;
   }
 
-  /* ---------- WELCOME CARD ---------- */
-  .welcome-card {
+  /* ---------- HEADER CARD ---------- */
+  .header-card {
     background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
     border: none;
   }
 
-  .welcome-content {
+  .header-content {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -61,14 +106,14 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
-  .welcome-text h2 {
+  .header-text h2 {
     margin: 0;
     font-size: 18px;
     font-weight: bold;
     color: var(--text-dark);
   }
 
-  .welcome-text p {
+  .header-text p {
     margin: 6px 0 0;
     font-size: 14px;
     color: var(--text-muted);
@@ -243,6 +288,8 @@
     padding-top: 8px;
     border-top: 1px solid #e5e7eb;
     font-weight: 600;
+    display: flex;
+    justify-content: space-between;
   }
 
   .status-row.ready strong {
@@ -372,21 +419,8 @@
     color: var(--text-dark);
   }
 
-  /* ---------- LOCATION CARD ---------- */
-  .location-card {
-    padding: 0;
-  }
-
-  .location-card .list-item {
-    align-items: flex-start;
-  }
-
-  .location-card mat-slide-toggle {
-    margin-left: auto;
-  }
-
   @media (max-width: 576px) {
-    .welcome-content {
+    .header-content {
       flex-direction: column;
       text-align: center;
     }
@@ -396,11 +430,11 @@
       height: 100px;
     }
 
-    .welcome-text h2 {
+    .header-text h2 {
       font-size: 16px;
     }
 
-    .welcome-text p {
+    .header-text p {
       font-size: 13px;
     }
 
@@ -410,7 +444,7 @@
   }
 }
 
-/* ---------- DESKTOP STYLES (Your original CSS - unchanged) ---------- */
+/* ---------- DESKTOP STYLES ---------- */
 @media (min-width: 992px) {
   .desktop-header {
     margin-bottom: 32px;
@@ -481,12 +515,6 @@
     background: #f97316;
   }
 
-  .stat-change {
-    font-size: 14px;
-    font-weight: 600;
-    color: #10b981;
-  }
-
   .stat-card h3 {
     margin: 0;
     font-size: 14px;
@@ -499,6 +527,12 @@
     font-size: 28px;
     font-weight: 700;
     color: var(--text-dark);
+  }
+
+  .stat-subtitle {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--text-muted);
   }
 
   /* Desktop Grid */
@@ -518,6 +552,9 @@
   .card-header {
     padding: 24px;
     border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .card-header h2 {
@@ -567,16 +604,16 @@
     color: var(--text-muted);
   }
 
-  .job-amount {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
+  .job-status {
+    font-size: 13px;
+    color: var(--text-muted);
   }
 
   .job-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
   }
 
   .status-badge {
@@ -599,165 +636,136 @@
     color: #065f46;
   }
 
-  .status-badge.in-progress {
-    background: #dbeafe;
-    color: #1e40af;
-  }
-
   .status-badge.pending {
     background: #fef3c7;
     color: #92400e;
   }
 
-  .job-time {
-    font-size: 14px;
+  .verified-by {
+    font-size: 12px;
     color: var(--text-muted);
   }
 
-  /* Upcoming Appointments */
-  .appointments-list {
+  /* Activity Calendar Desktop */
+  .timeline-desktop {
     padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
   }
 
-  .appointment-item {
-    display: flex;
-    gap: 12px;
-    padding: 16px;
-    background: #eef2ff;
-    border-radius: 12px;
-    border: 1px solid #c7d2fe;
+  .activity-calendar-desktop {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
-  .appointment-icon {
-    background: #4f46e5;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+  .day-cell-desktop {
+    aspect-ratio: 1;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
-  .appointment-icon i {
-    font-size: 20px;
-    color: white;
+  .day-cell-desktop.verified {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
   }
 
-  .appointment-info {
-    flex: 1;
-    min-width: 0;
+  .day-cell-desktop.pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde047;
   }
 
-  .appointment-info h3 {
-    margin: 0;
-    font-size: 14px;
+  .day-cell-desktop.empty {
+    background: #f3f4f6;
+    color: #9ca3af;
+    border: 1px solid #e5e7eb;
+  }
+
+  .day-cell-desktop:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Trust Metrics Desktop */
+  .trust-metrics-desktop {
+    padding: 0 24px 24px;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .trust-metrics-desktop h3 {
+    margin: 16px 0;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-dark);
   }
 
-  .appointment-info p {
-    margin: 4px 0;
-    font-size: 12px;
+  .metric-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .metric-item:last-child {
+    border-bottom: none;
+  }
+
+  .metric-item .label {
+    font-size: 14px;
     color: var(--text-muted);
   }
 
-  .appointment-time {
-    display: block;
-    margin-top: 8px;
-    font-size: 12px;
+  .metric-item .value {
+    font-size: 16px;
     font-weight: 600;
-    color: #4f46e5;
+    color: var(--text-dark);
   }
 
-  /* Credit Score & Gig Summary at bottom for desktop */
-  .credit-card,
-  .list-card {
+  /* Credit Preview Desktop */
+  .credit-preview-card-desktop {
     background: #fff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    margin-bottom: 16px;
-  }
-
-  .credit-card {
-    text-align: center;
     padding: 24px;
+    border: 2px solid #d1d5db;
   }
 
-  .credit-card h3 {
-    margin: 0 0 16px;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .score-wrapper {
+  .preview-content-desktop {
     display: flex;
-    justify-content: center;
-    margin-bottom: 16px;
+    gap: 32px;
+    margin-top: 16px;
   }
 
-  .score-circle {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: conic-gradient(var(--success) 0deg 270deg, #e5e7eb 270deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .preview-metric {
+    flex: 1;
+    text-align: center;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
   }
 
-  .score-circle span {
-    background: #fff;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
+  .preview-metric .label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .preview-metric .value {
+    display: block;
+    font-size: 20px;
     font-weight: 700;
-    color: var(--success);
+    color: var(--text-dark);
   }
 
-  .score-label {
-    margin: 0;
-    font-size: 14px;
-    color: var(--text-muted);
-  }
-
-  .list-card {
-    padding: 0;
-    cursor: pointer;
-  }
-
-  .list-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 20px 24px;
-  }
-
-  .list-item h4 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  .list-item p {
-    margin: 4px 0 0;
-    font-size: 14px;
-    color: var(--text-muted);
-  }
-
-  .list-item i:last-child {
-    margin-left: auto;
-    color: #9ca3af;
-  }
-
-  .green {
+  .preview-metric.status.ready .value {
     color: var(--success);
   }
 
