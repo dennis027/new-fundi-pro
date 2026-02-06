@@ -17,7 +17,7 @@ import { CreditScore } from './components/credit-score/credit-score';
 import { EmailVerification } from './components/auth/email-verification/email-verification';
 import { Dash404 } from './components/dash-404/dash-404';
 import { Verification } from './components/verification/verification';
-import { Analytics } from './component/analytics/analytics';
+import { Analytics } from './components/analytics/analytics';
 
 export const routes: Routes = [
   {path:'home',component:Home},
