@@ -1,0 +1,421 @@
+<div class="page">
+  
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading analytics...</p>
+    </div>
+  }
+
+  <!-- Mobile View -->
+  @if (isMobile() && !isLoading()) {
+    <br><br>
+
+    <!-- Credit Score Card -->
+    @if (creditScoreData()) {
+      <section class="card credit-card">
+        <h3>🏆 Credit Score</h3>
+        <div class="credit-score-display">
+          <div class="score-circle" [class]="getCreditScoreClass(creditScoreData()!.current_score)">
+            <span class="score-number">{{ creditScoreData()!.current_score }}</span>
+            <span class="score-label">/ 100</span>
+          </div>
+          <div class="score-info">
+            <p class="score-status" [class]="getCreditScoreClass(creditScoreData()!.current_score)">
+              {{ creditScoreData()!.current_score >= 70 ? 'Excellent' : creditScoreData()!.current_score >= 40 ? 'Good' : 'Building' }}
+            </p>
+            @if (creditScoreData()!.recent_trend.last_7_days_change !== 0) {
+              <p class="score-change" [class]="getChangeClass(creditScoreData()!.recent_trend.last_7_days_change)">
+                <i class="material-icons">{{ getChangeIcon(creditScoreData()!.recent_trend.last_7_days_change) }}</i>
+                {{ creditScoreData()!.recent_trend.last_7_days_change > 0 ? '+' : '' }}{{ creditScoreData()!.recent_trend.last_7_days_change }} this week
+              </p>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Summary Cards -->
+    @if (summaryStats()) {
+      <section class="card summary-card">
+        <h3>📊 Overview (Last 30 Days)</h3>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="label">Total Gigs</span>
+            <span class="value">{{ summaryStats()!.last_30_days.total_gigs }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Verified</span>
+            <span class="value">{{ summaryStats()!.last_30_days.verified_gigs }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Earnings</span>
+            <span class="value">{{ formatCurrency(summaryStats()!.last_30_days.total_earnings) }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Sites</span>
+            <span class="value">{{ summaryStats()!.all_time.unique_orgs }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparison Card -->
+      @if (comparativeData()) {
+        <section class="card comparison-card">
+          <h3>📈 This Month vs Last Month</h3>
+          <div class="comparison-grid">
+            <div class="comparison-item">
+              <div class="comparison-label">
+                <i class="material-icons">assignment</i>
+                <span>Gigs</span>
+              </div>
+              <div class="comparison-value" [class]="getChangeClass(comparativeData()!.changes.gigs_change)">
+                <i class="material-icons">{{ getChangeIcon(comparativeData()!.changes.gigs_change) }}</i>
+                <span>{{ comparativeData()!.changes.gigs_change > 0 ? '+' : '' }}{{ comparativeData()!.changes.gigs_change }}%</span>
+              </div>
+            </div>
+            <div class="comparison-item">
+              <div class="comparison-label">
+                <i class="material-icons">attach_money</i>
+                <span>Earnings</span>
+              </div>
+              <div class="comparison-value" [class]="getChangeClass(comparativeData()!.changes.earnings_change)">
+                <i class="material-icons">{{ getChangeIcon(comparativeData()!.changes.earnings_change) }}</i>
+                <span>{{ comparativeData()!.changes.earnings_change > 0 ? '+' : '' }}{{ comparativeData()!.changes.earnings_change }}%</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Top Performers -->
+      <section class="card performers-card">
+        <h3>🎯 Your Best Work</h3>
+        <div class="performer-item">
+          <i class="material-icons">business</i>
+          <div>
+            <p class="performer-label">Top Client</p>
+            <p class="performer-value">{{ summaryStats()!.top_performers.top_organization || 'N/A' }}</p>
+          </div>
+          <span class="performer-badge">{{ summaryStats()!.top_performers.top_organization_gigs }} gigs</span>
+        </div>
+        <div class="performer-item">
+          <i class="material-icons">build</i>
+          <div>
+            <p class="performer-label">Top Skill</p>
+            <p class="performer-value">{{ summaryStats()!.top_performers.top_job_type || 'N/A' }}</p>
+          </div>
+          <span class="performer-badge">{{ formatCurrency(summaryStats()!.top_performers.top_job_type_earnings) }}</span>
+        </div>
+      </section>
+    }
+
+    <!-- Top Organizations List -->
+    <section class="card list-card">
+      <div class="section-header">
+        <h3>🏢 Your Clients</h3>
+      </div>
+      @if (topOrganizations().length === 0) {
+        <div class="empty-state-mobile">
+          <i class="material-icons">business_center</i>
+          <p>No client data yet</p>
+        </div>
+      } @else {
+        <div class="orgs-list-mobile">
+          @for (org of topOrganizations(); track org.organization_id) {
+            <div class="org-item-mobile">
+              <div class="org-info-mobile">
+                <h4>{{ org.organization_name }}</h4>
+                <p>{{ org.total_gigs }} gigs • {{ org.verification_rate }}% verified</p>
+              </div>
+              <div class="org-earnings">
+                <span class="earnings">{{ formatCurrency(org.total_earnings) }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Top Job Types -->
+    <section class="card list-card">
+      <div class="section-header">
+        <h3>🔧 Your Skills</h3>
+      </div>
+      @if (topJobTypes().length === 0) {
+        <div class="empty-state-mobile">
+          <i class="material-icons">work_outline</i>
+          <p>No skill data yet</p>
+        </div>
+      } @else {
+        <div class="job-types-list-mobile">
+          @for (job of topJobTypes(); track job.job_type) {
+            <div class="job-type-item-mobile">
+              <div class="job-type-info">
+                <h4>{{ job.job_type }}</h4>
+                <p>{{ job.total_gigs }} gigs • {{ job.verification_rate }}% verified</p>
+              </div>
+              <div class="job-type-revenue">
+                <span class="revenue">{{ formatCurrency(job.total_earnings) }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Trends Chart -->
+    <section class="card chart-card">
+      <h3>📊 Work Trends (Last 2 Weeks)</h3>
+      <div class="mobile-chart">
+        @if (workTrends().length > 0) {
+          <div class="chart-bars-mobile">
+            @for (trend of workTrends(); track trend.period) {
+              <div class="bar-container-mobile">
+                <div class="bar-mobile" 
+                     [style.height.%]="maxTrendValue() > 0 ? (trend.total_gigs / maxTrendValue()) * 100 : 0"
+                     [title]="trend.total_gigs + ' gigs'">
+                </div>
+                <span class="bar-count">{{ trend.total_gigs }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state-mobile">
+            <p>No trend data available</p>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Desktop View -->
+  @if (!isMobile() && !isLoading()) {
+    <div class="desktop-header">
+      <h1>My Work Analytics</h1>
+      <p>Track your progress and earnings</p>
+    </div>
+
+    <!-- Summary Stats -->
+    @if (summaryStats()) {
+      <div class="stats-grid">
+        <div class="stat-card credit-stat-card">
+          <div class="stat-header">
+            <h3>Credit Score</h3>
+          </div>
+          @if (creditScoreData()) {
+            <div class="credit-display-desktop">
+              <div class="score-number-large" [class]="getCreditScoreClass(creditScoreData()!.current_score)">
+                {{ creditScoreData()!.current_score }}
+              </div>
+              <p class="score-status-desktop" [class]="getCreditScoreClass(creditScoreData()!.current_score)">
+                {{ creditScoreData()!.current_score >= 70 ? 'Excellent' : creditScoreData()!.current_score >= 40 ? 'Good' : 'Building' }}
+              </p>
+              @if (creditScoreData()!.recent_trend.last_7_days_change !== 0) {
+                <p class="stat-change" [class]="getChangeClass(creditScoreData()!.recent_trend.last_7_days_change)">
+                  <i class="material-icons">{{ getChangeIcon(creditScoreData()!.recent_trend.last_7_days_change) }}</i>
+                  {{ creditScoreData()!.recent_trend.last_7_days_change > 0 ? '+' : '' }}{{ creditScoreData()!.recent_trend.last_7_days_change }} this week
+                </p>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon bg-blue">
+              <i class="material-icons">assignment</i>
+            </div>
+          </div>
+          <h3>Total Gigs (30d)</h3>
+          <p class="stat-value">{{ summaryStats()!.last_30_days.total_gigs }}</p>
+          @if (comparativeData()) {
+            <p class="stat-change" [class]="getChangeClass(comparativeData()!.changes.gigs_change)">
+              <i class="material-icons">{{ getChangeIcon(comparativeData()!.changes.gigs_change) }}</i>
+              {{ comparativeData()!.changes.gigs_change > 0 ? '+' : '' }}{{ comparativeData()!.changes.gigs_change }}% vs last month
+            </p>
+          }
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon bg-green">
+              <i class="material-icons">verified</i>
+            </div>
+          </div>
+          <h3>Verified Gigs (30d)</h3>
+          <p class="stat-value">{{ summaryStats()!.last_30_days.verified_gigs }}</p>
+          <p class="stat-subtitle">{{ summaryStats()!.all_time.verification_rate }}% rate</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon bg-orange">
+              <i class="material-icons">attach_money</i>
+            </div>
+          </div>
+          <h3>Earnings (30d)</h3>
+          <p class="stat-value">{{ formatCurrency(summaryStats()!.last_30_days.total_earnings) }}</p>
+          @if (comparativeData()) {
+            <p class="stat-change" [class]="getChangeClass(comparativeData()!.changes.earnings_change)">
+              <i class="material-icons">{{ getChangeIcon(comparativeData()!.changes.earnings_change) }}</i>
+              {{ comparativeData()!.changes.earnings_change > 0 ? '+' : '' }}{{ comparativeData()!.changes.earnings_change }}%
+            </p>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Desktop Grid -->
+    <div class="desktop-grid">
+      <!-- Trends Chart -->
+      <div class="desktop-card chart-section">
+        <div class="card-header">
+          <h2>Work Trends</h2>
+          <span class="subtitle">Last 14 days</span>
+        </div>
+        <div class="chart-content">
+          @if (workTrends().length > 0) {
+            <div class="chart-bars-desktop">
+              @for (trend of workTrends(); track trend.period) {
+                <div class="bar-container-desktop">
+                  <div class="bar-wrapper">
+                    <div class="bar-desktop" 
+                         [style.height.%]="maxTrendValue() > 0 ? (trend.total_gigs / maxTrendValue()) * 100 : 0"
+                         [title]="trend.total_gigs + ' gigs • ' + formatCurrency(trend.total_earnings)">
+                    </div>
+                  </div>
+                  <span class="bar-label-desktop">{{ trend.period | date:'MMM d' }}</span>
+                  <span class="bar-value-desktop">{{ trend.total_gigs }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">
+              <i class="material-icons">show_chart</i>
+              <p>No trend data available</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Top Performers -->
+      <div class="desktop-card">
+        <div class="card-header">
+          <h2>Your Best Work</h2>
+        </div>
+        <div class="performers-content">
+          @if (summaryStats()) {
+            <div class="performer-card">
+              <div class="performer-icon bg-blue">
+                <i class="material-icons">business</i>
+              </div>
+              <div class="performer-details">
+                <p class="performer-title">Top Client</p>
+                <h3>{{ summaryStats()!.top_performers.top_organization || 'N/A' }}</h3>
+                <p class="performer-stat">{{ summaryStats()!.top_performers.top_organization_gigs }} gigs • {{ formatCurrency(summaryStats()!.top_performers.top_organization_earnings) }}</p>
+              </div>
+            </div>
+
+            <div class="performer-card">
+              <div class="performer-icon bg-green">
+                <i class="material-icons">build</i>
+              </div>
+              <div class="performer-details">
+                <p class="performer-title">Top Skill</p>
+                <h3>{{ summaryStats()!.top_performers.top_job_type || 'N/A' }}</h3>
+                <p class="performer-stat">{{ summaryStats()!.top_performers.top_job_type_gigs }} gigs • {{ formatCurrency(summaryStats()!.top_performers.top_job_type_earnings) }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Grid -->
+    <div class="bottom-grid">
+      <!-- Top Clients -->
+      <div class="desktop-card">
+        <div class="card-header">
+          <h2>Your Clients</h2>
+        </div>
+        <div class="table-container">
+          @if (topOrganizations().length === 0) {
+            <div class="empty-state">
+              <i class="material-icons">business_center</i>
+              <p>No client data yet</p>
+            </div>
+          } @else {
+            <table class="analytics-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Total Gigs</th>
+                  <th>Verified</th>
+                  <th>Rate</th>
+                  <th>Earnings</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (org of topOrganizations(); track org.organization_id) {
+                  <tr>
+                    <td>
+                      <div class="org-name">{{ org.organization_name }}</div>
+                    </td>
+                    <td>{{ org.total_gigs }}</td>
+                    <td>{{ org.verified_gigs }}</td>
+                    <td>
+                      <span class="rate-badge">{{ org.verification_rate }}%</span>
+                    </td>
+                    <td class="earnings-cell">{{ formatCurrency(org.total_earnings) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+
+      <!-- Top Skills -->
+      <div class="desktop-card">
+        <div class="card-header">
+          <h2>Your Skills</h2>
+        </div>
+        <div class="table-container">
+          @if (topJobTypes().length === 0) {
+            <div class="empty-state">
+              <i class="material-icons">work_outline</i>
+              <p>No skill data yet</p>
+            </div>
+          } @else {
+            <table class="analytics-table">
+              <thead>
+                <tr>
+                  <th>Skill</th>
+                  <th>Total Gigs</th>
+                  <th>Verified</th>
+                  <th>Earnings</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (job of topJobTypes(); track job.job_type) {
+                  <tr>
+                    <td>
+                      <div class="job-type-name">{{ job.job_type }}</div>
+                    </td>
+                    <td>{{ job.total_gigs }}</td>
+                    <td>
+                      <span class="rate-badge">{{ job.verification_rate }}%</span>
+                    </td>
+                    <td class="earnings-cell">{{ formatCurrency(job.total_earnings) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
