@@ -11,6 +11,7 @@ import { AppBarService } from '../../services/app-bar-service';
 import { GigServices } from '../../services/gig-services';
 import { SharedImports } from '../../shared-imports/imports';
 import regionsData from '../../../assets/JSON-Files/regions.json';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 interface JobType {
@@ -63,6 +64,26 @@ export class GigSummary implements OnInit, OnDestroy {
   private gigServices = inject(GigServices);
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+
+
+  private showSuccess(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: ['success-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
+  private showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      panelClass: ['error-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
 
   userRelatedGigs: Gig[] = [];
   organizations: any[] = [];
@@ -364,9 +385,11 @@ initGigForm(): void {
         this.gigs.update(g => [...g, newGig]);
         this.isSubmitting.set(false);
         this.closeDialog();
+        this.showSuccess('Gig added successfully!');
       },
       error: () => {
         this.isSubmitting.set(false);
+        this.showError('Failed to add gig. Please try again.');
       }
     });
     

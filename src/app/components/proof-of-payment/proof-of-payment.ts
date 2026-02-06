@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AppBarService } from '../../services/app-bar-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-proof-of-payment',
@@ -29,6 +30,26 @@ export class ProofOfPayment implements OnInit, OnDestroy {
   isAutoFilled = signal(false);
   isSubmitting = signal(false);
   analysisError = signal<string | null>(null);
+  private snackBar = inject(MatSnackBar);
+
+  private showSuccess(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: ['success-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
+  private showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      panelClass: ['error-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
   
   amount = signal<string>('');
   transactionCode = signal<string>('');

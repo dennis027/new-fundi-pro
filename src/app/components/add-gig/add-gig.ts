@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AppBarService } from '../../services/app-bar-service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface JobType {
   id: number;
@@ -54,6 +55,26 @@ export class AddGig implements OnInit, OnDestroy {
 
   private appBar = inject(AppBarService);
   private fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
+
+  private showSuccess(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: ['success-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
+  private showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      panelClass: ['error-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
 
   // Form
   gigForm!: FormGroup;

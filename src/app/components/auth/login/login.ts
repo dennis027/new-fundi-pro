@@ -91,6 +91,13 @@ export class Login implements OnInit, OnDestroy {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => {
+
+          const accountType = res?.user?.account_type;
+
+          if (accountType !== '01') {
+            this.showError('This login is only allowed for Fundi accounts.');
+            return;
+          }
           this.showSuccess('Logged in successfully!');
           this.router.navigate(['/main-menu']);
           this.cdr.detectChanges();
